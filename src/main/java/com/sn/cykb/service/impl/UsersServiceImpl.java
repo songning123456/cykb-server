@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
@@ -31,7 +30,7 @@ public class UsersServiceImpl implements UsersService {
     private UsersRepository usersRepository;
 
     @Override
-    public CommonDTO<UsersDTO> getUsersInfo(CommonVO<UsersVO> commonVO) {
+    public CommonDTO<UsersDTO> getWxUsersInfo(CommonVO<UsersVO> commonVO) {
         CommonDTO<UsersDTO> commonDTO = new CommonDTO<>();
         String code = commonVO.getCondition().getCode();
         String avatar = commonVO.getCondition().getAvatar();

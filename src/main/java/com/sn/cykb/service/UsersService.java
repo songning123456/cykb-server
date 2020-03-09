@@ -12,5 +12,5 @@ import com.sn.cykb.vo.UsersVO;
  */
 public interface UsersService {
 
-    CommonDTO<UsersDTO> getUsersInfo(CommonVO<UsersVO> commonVO);
+    CommonDTO<UsersDTO> getWxUsersInfo(CommonVO<UsersVO> commonVO);
 }
