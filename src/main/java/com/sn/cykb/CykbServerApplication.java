@@ -12,5 +12,4 @@ public class CykbServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(CykbServerApplication.class, args);
     }
-
 }
