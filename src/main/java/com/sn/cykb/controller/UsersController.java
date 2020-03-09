@@ -24,7 +24,7 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
 
-    @PostMapping("/login/getUsersInfo")
+    @PostMapping("/weixin/getUsersInfo")
     @AControllerAspect(description = "登陆时获取用户信息")
     CommonDTO<UsersDTO> getUsersInfos(@RequestBody CommonVO<UsersVO> commonVO) {
         CommonDTO<UsersDTO> commonDTO = usersService.getUsersInfo(commonVO);

@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.sn.cykb.constant.HttpStatus;
 import com.sn.cykb.dto.CommonDTO;
 import com.sn.cykb.dto.UsersDTO;
-import com.sn.cykb.entity.UsersEntity;
+import com.sn.cykb.entity.Users;
 import com.sn.cykb.repository.UsersRepository;
 import com.sn.cykb.service.UsersService;
+import com.sn.cykb.util.ClassConvertUtil;
 import com.sn.cykb.util.HttpUtil;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.UsersVO;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -39,37 +42,38 @@ public class UsersServiceImpl implements UsersService {
             commonDTO.setMessage("weixin code不能为空");
             return commonDTO;
         }
-        String uniqueId = "";
-        try {
-            uniqueId = this.getWeixinUniqueId(code);
-        } catch (Exception e) {
+        String uniqueId = this.getWeixinUniqueId(code);
+        if (StringUtils.isEmpty(uniqueId)) {
             commonDTO.setStatus(HttpStatus.HTTP_ACCEPTED);
-            commonDTO.setMessage(e.getMessage());
+            commonDTO.setMessage("未获取到微信openId");
             return commonDTO;
         }
-        UsersEntity usersEntity = usersRepository.findByUniqueId(uniqueId);
-        if (usersEntity != null) {
-            if (!avatar.equals(usersEntity.getAvatar()) || !nickName.equals(usersEntity.getNickName())) {
-                usersEntity = UsersEntity.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).updateTime(new Date()).build();
-                usersRepository.save(usersEntity);
-            } else {
-
+        Users users = usersRepository.findByUniqueId(uniqueId);
+        // 判断是否存在
+        if (users != null) {
+            // 判断是否修改过
+            if (!avatar.equals(users.getAvatar()) || !nickName.equals(users.getNickName())) {
+                users = Users.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).updateTime(new Date()).build();
+                usersRepository.updateNative(users);
             }
         } else {
-            usersEntity = UsersEntity.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).updateTime(new Date()).build();
-            usersRepository.save(usersEntity);
+            users = Users.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).updateTime(new Date()).build();
+            users = usersRepository.save(users);
         }
+        UsersDTO usersDTO = new UsersDTO();
+        ClassConvertUtil.populate(users, usersDTO);
+        commonDTO.setData(Collections.singletonList(usersDTO));
         return commonDTO;
     }
 
-    private String getWeixinUniqueId(String code) throws Exception {
+    private String getWeixinUniqueId(String code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + "wxffd0f17a532bf00b" + "&secret=" + "42690dadb85962bcf8382356099b9225" + "&js_code=" + code + "&grant_type=" + code;
         String respond = HttpUtil.doGet(url);
         String uniqueId = JSON.parseObject(respond).getString("openid");
         if (!StringUtils.isEmpty(uniqueId)) {
             return uniqueId;
         } else {
-            throw new Exception("未获取到微信openId");
+            return "";
         }
     }
 }

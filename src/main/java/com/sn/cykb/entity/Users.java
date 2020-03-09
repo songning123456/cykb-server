@@ -20,11 +20,11 @@ import java.util.Date;
 @Entity
 @Table(name = "users")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
-public class UsersEntity {
+public class Users {
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
-    private String usersId;
+    private String id;
 
     @Column(name = "uniqueId", columnDefinition = "VARCHAR(128) NOT NULL COMMENT '用户唯一标识'")
     private String uniqueId;
