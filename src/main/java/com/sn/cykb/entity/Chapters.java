@@ -32,9 +32,6 @@ public class Chapters {
     @Column(name = "novelsId", columnDefinition = "VARCHAR(32) NOT NULL COMMENT 'novels_id'")
     private String novelsId;
 
-    @Column(name = "sort", columnDefinition = "INT NOT NULL COMMENT '排序(0,1,2,3...)'")
-    private Integer sort;
-
     @Column(name = "updateTime", columnDefinition = "DATETIME NOT NULL COMMENT '更新时间'")
     private Date updateTime;
 }

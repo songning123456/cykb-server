@@ -21,6 +21,9 @@ import org.apache.http.util.EntityUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 /**
  * Http请求工具类
  *
@@ -195,4 +198,37 @@ public class HttpUtil {
         }
         return respContent;
     }
+
+    public static Document getHtmlFromUrl(String url, boolean useHtmlUnit) {
+        Document html = null;
+        if (useHtmlUnit) {
+            WebClient webClient = new WebClient(BrowserVersion.CHROME);
+            webClient.getOptions().setJavaScriptEnabled(true);
+            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setActiveXNative(false);
+            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            webClient.getOptions().setTimeout(10000);
+            HtmlPage rootPage;
+            try {
+                rootPage = webClient.getPage(url);
+                webClient.waitForBackgroundJavaScript(30000);
+                String htmlString = rootPage.asXml();
+                html = Jsoup.parse(htmlString);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                webClient.close();
+            }
+        } else {
+            try {
+                html = Jsoup.connect(url).userAgent("Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)").get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return html;
+    }
+
 }
