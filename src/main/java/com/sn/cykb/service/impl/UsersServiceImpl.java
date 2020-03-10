@@ -66,7 +66,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     private String getWeixinUniqueId(String code) {
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + "wxffd0f17a532bf00b" + "&secret=" + "42690dadb85962bcf8382356099b9225" + "&js_code=" + code + "&grant_type=" + code;
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + "wxa0c6ab139ce8d933" + "&secret=" + "8154f064fd75361e41ee71f1e1de6fd2" + "&js_code=" + code + "&grant_type=" + code;
         String respond = HttpUtil.doGet(url);
         String uniqueId = JSON.parseObject(respond).getString("openid");
         if (!StringUtils.isEmpty(uniqueId)) {
