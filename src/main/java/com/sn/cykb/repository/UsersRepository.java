@@ -18,6 +18,6 @@ public interface UsersRepository extends JpaRepository<Users, String> {
 
     @Modifying
     @Transactional
-    @Query(value = "update users set avatar=:#{#entity.avatar}, nick_name=:#{#entity.nickName}, update_time=:#{#entity.updateTime} where unique_id=:#{#entity.uniqueId}", nativeQuery = true)
+    @Query(value = "update users set avatar=:#{#entity.avatar}, nick_name=:#{#entity.nickName}, gender=:#{#entity.gender},update_time=:#{#entity.updateTime} where unique_id=:#{#entity.uniqueId}", nativeQuery = true)
     void updateNative(@Param("entity") Users users);
 }

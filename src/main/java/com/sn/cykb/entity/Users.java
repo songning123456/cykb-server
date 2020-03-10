@@ -35,6 +35,9 @@ public class Users {
     @Column(name = "avatar", columnDefinition = "VARCHAR(255) COMMENT '头像'")
     private String avatar;
 
+    @Column(name = "gender", columnDefinition = "VARCHAR(8) COMMENT '性别 男/女/未知'")
+    private String gender;
+
     @Column(name = "updateTime", columnDefinition = "DATETIME NOT NULL COMMENT '更新时间'")
     private Date updateTime;
 }

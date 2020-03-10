@@ -35,7 +35,7 @@ public class UsersServiceImpl implements UsersService {
         String code = commonVO.getCondition().getCode();
         String avatar = commonVO.getCondition().getAvatar();
         String nickName = commonVO.getCondition().getNickName();
-
+        String gender = commonVO.getCondition().getGender();
         if (StringUtils.isEmpty(code)) {
             commonDTO.setStatus(HttpStatus.HTTP_ACCEPTED);
             commonDTO.setMessage("weixin code不能为空");
@@ -51,12 +51,12 @@ public class UsersServiceImpl implements UsersService {
         // 判断是否存在
         if (users != null) {
             // 判断是否修改过
-            if (!avatar.equals(users.getAvatar()) || !nickName.equals(users.getNickName())) {
-                users = Users.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).updateTime(new Date()).build();
+            if (!avatar.equals(users.getAvatar()) || !nickName.equals(users.getNickName()) || !gender.equals(users.getGender())) {
+                users = Users.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).gender(gender).updateTime(new Date()).build();
                 usersRepository.updateNative(users);
             }
         } else {
-            users = Users.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).updateTime(new Date()).build();
+            users = Users.builder().uniqueId(uniqueId).avatar(avatar).nickName(nickName).gender(gender).updateTime(new Date()).build();
             users = usersRepository.save(users);
         }
         UsersDTO usersDTO = new UsersDTO();

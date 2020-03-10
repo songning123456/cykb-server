@@ -14,4 +14,6 @@ public class UsersDTO {
     private String nickName;
 
     private String avatar;
+
+    private String gender;
 }
