@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 @Entity
-@Table(name = "UsersNovelsRelation", uniqueConstraints = {@UniqueConstraint(columnNames = {"usersId", "novelsId"})})
+@Table(name = "UsersNovelsRelation", uniqueConstraints = {@UniqueConstraint(columnNames = {"uniqueId", "novelsId"})})
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class UsersNovelsRelation {
 
@@ -24,13 +24,13 @@ public class UsersNovelsRelation {
     @Column(length = 32)
     private String id;
 
-    @Column(name = "usersId", columnDefinition = "VARCHAR(32) NOT NULL COMMENT 'users_id'")
-    private String usersId;
+    @Column(name = "uniqueId", columnDefinition = "VARCHAR(128) NOT NULL COMMENT '用户唯一标识'")
+    private String uniqueId;
 
     @Column(name = "novelsId", columnDefinition = "VARCHAR(32) NOT NULL COMMENT 'novels_id'")
     private String novelsId;
 
-    @Column(name = "history", columnDefinition = "VARCHAR(128) NOT NULL COMMENT '当前阅读'")
+    @Column(name = "history", columnDefinition = "VARCHAR(128) COMMENT '当前阅读'")
     private String history;
 
     @Column(name = "updateTime", columnDefinition = "DATETIME NOT NULL COMMENT '更新时间'")

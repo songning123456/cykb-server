@@ -26,7 +26,7 @@ public class Comments {
     @Column(name = "content", columnDefinition = "TEXT NOT NULL COMMENT '文本内容'")
     private String content;
 
-    @Column(name = "contact", columnDefinition = "VARCHAR(64) NOT NULL COMMENT '文本内容'")
+    @Column(name = "contact", columnDefinition = "VARCHAR(64) NOT NULL COMMENT '联系方式'")
     private String contact;
 
     @Column(name = "updateTime", columnDefinition = "DATETIME NOT NULL COMMENT '更新时间'")

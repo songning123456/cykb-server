@@ -8,4 +8,6 @@ import lombok.Data;
  */
 @Data
 public class NovelsVO {
+
+    private String sex;
 }

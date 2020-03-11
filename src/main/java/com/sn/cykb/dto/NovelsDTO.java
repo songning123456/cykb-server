@@ -8,4 +8,18 @@ import lombok.Data;
  */
 @Data
 public class NovelsDTO {
+
+    private String title;
+
+    private String author;
+
+    private String sex;
+
+    private String category;
+
+    private String introduction;
+
+    private String latestChapter;
+
+    private Integer total;
 }

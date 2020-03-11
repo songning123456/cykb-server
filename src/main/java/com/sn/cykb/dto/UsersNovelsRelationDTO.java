@@ -8,4 +8,12 @@ import lombok.Data;
  */
 @Data
 public class UsersNovelsRelationDTO {
+
+    private String title;
+
+    private String author;
+
+    private String latestChapter;
+
+    private String coverUrl;
 }

@@ -8,4 +8,8 @@ import lombok.Data;
  */
 @Data
 public class CommentsVO {
+
+    private String content;
+
+    private String contact;
 }

@@ -41,6 +41,9 @@ public class Novels {
     @Column(name = "latestChapter", columnDefinition = "VARCHAR(64) NOT NULL default '暂无' COMMENT '最新章节'")
     private String latestChapter;
 
+    @Column(name = "coverUrl", columnDefinition = "VARCHAR(128) default '暂无' COMMENT '封面'")
+    private String coverUrl;
+
     @Column(name = "updateTime", columnDefinition = "DATETIME NOT NULL COMMENT '更新时间'")
     private Date updateTime;
 }

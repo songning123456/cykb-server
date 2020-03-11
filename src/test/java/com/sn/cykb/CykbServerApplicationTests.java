@@ -81,13 +81,14 @@ public class CykbServerApplicationTests {
                     String bookUrl = aElement.attr("href");
                     Document childDoc = HttpUtil.getHtmlFromUrl(bookUrl, true);
                     Element maininfoElement = childDoc.getElementById("maininfo");
+                    String coverUrl = childDoc.getElementById("sidebar").getElementsByTag("img").get(0).attr("src");
                     Element infoElement = maininfoElement.getElementById("info");
                     String introduction = maininfoElement.getElementById("intro").getElementsByTag("p").get(1).html();
                     String author = infoElement.getElementsByTag("p").get(0).html().split("：")[1];
                     String latestChapter = infoElement.getElementsByTag("p").get(3).getElementsByTag("a").get(0).html();
-                    novels = Novels.builder().title(title).author(author).sex(sex).category(category).introduction(introduction).latestChapter(latestChapter).updateTime(new Date()).build();
+                    novels = Novels.builder().title(title).author(author).sex(sex).category(category).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(new Date()).build();
                     novels = novelsRepository.save(novels);
-                    String novelsId = novels.getId();
+                    /*String novelsId = novels.getId();
                     Chapters chapters;
                     Element dlElement = childDoc.getElementById("list").getElementsByTag("dl").get(0);
                     for (Element ddElement : dlElement.getElementsByTag("dd")) {
@@ -98,7 +99,7 @@ public class CykbServerApplicationTests {
                         String content = contentDoc.getElementById("content").html();
                         chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(new Date()).build();
                         chaptersRepository.save(chapters);
-                    }
+                    }*/
                 }
             }
         } catch (Exception e) {
