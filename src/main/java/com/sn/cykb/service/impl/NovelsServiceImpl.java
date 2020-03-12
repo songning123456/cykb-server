@@ -54,7 +54,7 @@ public class NovelsServiceImpl implements NovelsService {
         src.forEach(item -> {
             NovelsDTO dto = new NovelsDTO();
             dto.setCategory(String.valueOf(item.get("category")));
-            dto.setTotal((int) item.get("total"));
+            dto.setTotal(Integer.parseInt(item.get("total").toString()));
             target.add(dto);
         });
         commonDTO.setTotal((long) src.size());
