@@ -21,5 +21,7 @@ public class NovelsDTO {
 
     private String latestChapter;
 
+    private String coverUrl;
+
     private Integer total;
 }
