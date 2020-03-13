@@ -34,21 +34,15 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
     public CommonDTO<UsersNovelsRelationDTO> bookcase(CommonVO<UsersNovelsRelationVO> commonVO) {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
         String uniqueId = commonVO.getCondition().getUniqueId();
-        List<UsersNovelsRelation> relations = usersNovelsRelationRepository.findAllByUniqueIdOrderByUpdateTimeDesc(uniqueId);
-        if (relations.isEmpty()) {
+        List<String> novelsIds = usersNovelsRelationRepository.findByUniqueIdNative(uniqueId);
+        if (novelsIds.isEmpty()) {
             commonDTO.setTotal(0L);
             commonDTO.setStatus(HttpStatus.HTTP_ACCEPTED);
             commonDTO.setMessage("书架暂无您的书籍");
         } else {
+            List<Novels> src = novelsRepository.findAllByIdInOrderByUpdateTimeDesc(novelsIds);
             List<UsersNovelsRelationDTO> target = new ArrayList<>();
-            UsersNovelsRelationDTO relationDTO;
-            for (UsersNovelsRelation relation : relations) {
-                relationDTO = new UsersNovelsRelationDTO();
-                String novelsId = relation.getNovelsId();
-                Novels novels = novelsRepository.findByIdOrderByUpdateTimeDesc(novelsId);
-                ClassConvertUtil.populate(novels, relationDTO);
-                target.add(relationDTO);
-            }
+            ClassConvertUtil.populateList(src, target, UsersNovelsRelationDTO.class);
             commonDTO.setData(target);
             commonDTO.setTotal((long) target.size());
         }

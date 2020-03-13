@@ -22,4 +22,6 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
     List<Map<String, Object>> countBySexNative(String sex);
 
     Novels findByIdOrderByUpdateTimeDesc(String novelsId);
+
+    List<Novels> findAllByIdInOrderByUpdateTimeDesc(List<String> novelsIds);
 }

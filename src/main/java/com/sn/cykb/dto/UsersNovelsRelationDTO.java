@@ -16,4 +16,6 @@ public class UsersNovelsRelationDTO {
     private String latestChapter;
 
     private String coverUrl;
+
+    private String updateTime;
 }
