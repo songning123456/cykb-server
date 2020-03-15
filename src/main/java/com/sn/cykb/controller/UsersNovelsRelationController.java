@@ -37,10 +37,17 @@ public class UsersNovelsRelationController {
         return commonDTO;
     }
 
-    @AControllerAspect(description = "置顶")
+    @AControllerAspect(description = "将本书置顶")
     @PostMapping("/topBookcase")
     public CommonDTO<UsersNovelsRelationDTO> topBookcases(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.topBookcase(commonVO);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "从书架删除本书")
+    @PostMapping("/deleteBookcase")
+    public CommonDTO<UsersNovelsRelationDTO> deleteBookcases(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.deleteBookcase(commonVO);
         return commonDTO;
     }
 }

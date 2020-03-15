@@ -78,17 +78,15 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         String uniqueId = commonVO.getCondition().getUniqueId();
         String novelsId = commonVO.getCondition().getNovelsId();
         usersNovelsRelationRepository.updateByRecentReadNative(uniqueId, novelsId, new Date());
-        List<String> novelsIds = usersNovelsRelationRepository.findByUniqueIdNative(uniqueId);
-        UsersNovelsRelationDTO relationDTO;
-        List<UsersNovelsRelationDTO> target = new ArrayList<>();
-        // 置顶后根据relation updateTime重新排序(即 最近阅读排序)
-        for (String novels_id : novelsIds) {
-            relationDTO = new UsersNovelsRelationDTO();
-            Novels novels = novelsRepository.findById(novels_id).get();
-            ClassConvertUtil.populate(novels, relationDTO);
-            target.add(relationDTO);
-        }
-        commonDTO.setData(target);
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<UsersNovelsRelationDTO> deleteBookcase(CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
+        String uniqueId = commonVO.getCondition().getUniqueId();
+        String novelsId = commonVO.getCondition().getNovelsId();
+        usersNovelsRelationRepository.deleteByUniqueIdAndNovelsId(uniqueId, novelsId);
         return commonDTO;
     }
 }
