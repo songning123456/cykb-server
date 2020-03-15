@@ -12,4 +12,9 @@ public class UsersNovelsRelationVO {
     private String uniqueId;
 
     private String novelsId;
+
+    /**
+     * recentRead; updateTime
+     */
+    private String sortType;
 }

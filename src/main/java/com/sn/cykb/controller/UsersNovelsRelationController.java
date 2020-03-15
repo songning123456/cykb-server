@@ -36,4 +36,11 @@ public class UsersNovelsRelationController {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.insertBookcase(commonVO);
         return commonDTO;
     }
+
+    @AControllerAspect(description = "置顶")
+    @PostMapping("/topBookcase")
+    public CommonDTO<UsersNovelsRelationDTO> topBookcases(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.topBookcase(commonVO);
+        return commonDTO;
+    }
 }

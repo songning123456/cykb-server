@@ -40,9 +40,22 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
             commonDTO.setStatus(HttpStatus.HTTP_ACCEPTED);
             commonDTO.setMessage("书架暂无您的书籍");
         } else {
-            List<Novels> src = novelsRepository.findAllByIdInOrderByUpdateTimeDesc(novelsIds);
+            String sortType = commonVO.getCondition().getSortType();
             List<UsersNovelsRelationDTO> target = new ArrayList<>();
-            ClassConvertUtil.populateList(src, target, UsersNovelsRelationDTO.class);
+            if ("最近阅读".equals(sortType)) {
+                // 根据 最近阅读 排序 users_novels_relation => update_time
+                UsersNovelsRelationDTO relationDTO;
+                for (String novelsId : novelsIds) {
+                    relationDTO = new UsersNovelsRelationDTO();
+                    Novels novels = novelsRepository.findById(novelsId).get();
+                    ClassConvertUtil.populate(novels, relationDTO);
+                    target.add(relationDTO);
+                }
+            } else {
+                // 根据最近更新排序 novels => update_time
+                List<Novels> src = novelsRepository.findAllByIdInOrderByUpdateTimeDesc(novelsIds);
+                ClassConvertUtil.populateList(src, target, UsersNovelsRelationDTO.class);
+            }
             commonDTO.setData(target);
             commonDTO.setTotal((long) target.size());
         }
@@ -56,6 +69,26 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         String uniqueId = commonVO.getCondition().getUniqueId();
         UsersNovelsRelation relation = UsersNovelsRelation.builder().novelsId(novelsId).uniqueId(uniqueId).updateTime(new Date()).build();
         usersNovelsRelationRepository.save(relation);
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<UsersNovelsRelationDTO> topBookcase(CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
+        String uniqueId = commonVO.getCondition().getUniqueId();
+        String novelsId = commonVO.getCondition().getNovelsId();
+        usersNovelsRelationRepository.updateByRecentReadNative(uniqueId, novelsId, new Date());
+        List<String> novelsIds = usersNovelsRelationRepository.findByUniqueIdNative(uniqueId);
+        UsersNovelsRelationDTO relationDTO;
+        List<UsersNovelsRelationDTO> target = new ArrayList<>();
+        // 置顶后根据relation updateTime重新排序(即 最近阅读排序)
+        for (String novels_id : novelsIds) {
+            relationDTO = new UsersNovelsRelationDTO();
+            Novels novels = novelsRepository.findById(novels_id).get();
+            ClassConvertUtil.populate(novels, relationDTO);
+            target.add(relationDTO);
+        }
+        commonDTO.setData(target);
         return commonDTO;
     }
 }
