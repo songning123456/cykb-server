@@ -9,5 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 @Documented
-public @interface AClassConvertIgnore {
+public @interface AClassConvert {
+    boolean ignore() default false;
+    String fieldName() default "";
 }

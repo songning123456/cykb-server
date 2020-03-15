@@ -1,9 +1,8 @@
 package com.sn.cykb.util;
 
-import com.sn.cykb.annotation.AClassConvertIgnore;
+import com.sn.cykb.annotation.AClassConvert;
 import com.sn.cykb.util.classconvert.ClassConvertContext;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -32,26 +31,29 @@ public class ClassConvertUtil {
                 try {
                     Object result = srcMethod.invoke(src);
                     // 根据方法名获取字段，然后获取字段上的注解
-                    String fieldName = srcMethodName.substring(3, 4).toLowerCase() + srcMethodName.substring(4);
-                    Field field = src.getClass().getDeclaredField(fieldName);
-                    AClassConvertIgnore aClassConvertIgnore = field.getAnnotation(AClassConvertIgnore.class);
+                    String srcFieldName = srcMethodName.substring(3, 4).toLowerCase() + srcMethodName.substring(4);
+                    Field srcField = src.getClass().getDeclaredField(srcFieldName);
+                    AClassConvert aClassConvert = srcField.getAnnotation(AClassConvert.class);
                     // 获取 get 方法返回值类型
                     Class<?> srcConvertClass = srcMethod.getReturnType();
 
                     for (Method targetMethod : targetMethods) {
                         // 如果某个字段存在此注解，则跳过转换
-                        if (aClassConvertIgnore != null) {
+                        if (aClassConvert != null && aClassConvert.ignore()) {
                             continue;
                         }
                         String targetMethodName = targetMethod.getName();
-                        if (targetMethodName.startsWith("set") && targetMethodName.substring(3).equals(srcMethodName.substring(3))) {
-                            // 获取 set 方法 参数类型
-                            Class<?> targetConvertClass = targetMethod.getParameterTypes()[0];
-                            // 执行 类型转化
-                            if (result != null && srcConvertClass != targetConvertClass) {
-                                result = ClassConvertContext.getInstance(srcConvertClass, targetConvertClass).classConvert(result);
+                        if (targetMethodName.startsWith("set")) {
+                            String targetFieldName = targetMethodName.substring(3, 4).toLowerCase() + targetMethodName.substring(4);
+                            if (srcFieldName.equals(targetFieldName) || (aClassConvert != null && aClassConvert.fieldName().equals(targetFieldName))) {
+                                // 获取 set 方法 参数类型
+                                Class<?> targetConvertClass = targetMethod.getParameterTypes()[0];
+                                // 执行 类型转化
+                                if (result != null && srcConvertClass != targetConvertClass) {
+                                    result = ClassConvertContext.getInstance(srcConvertClass, targetConvertClass).classConvert(result);
+                                }
+                                targetMethod.invoke(target, result);
                             }
-                            targetMethod.invoke(target, result);
                         }
                     }
                 } catch (Exception e) {

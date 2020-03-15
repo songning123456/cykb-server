@@ -21,7 +21,5 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
     @Query(value = "select count(1) as total, category from novels where sex = ?1 group by category", nativeQuery = true)
     List<Map<String, Object>> countBySexNative(String sex);
 
-    Novels findByIdOrderByUpdateTimeDesc(String novelsId);
-
     List<Novels> findAllByIdInOrderByUpdateTimeDesc(List<String> novelsIds);
 }
