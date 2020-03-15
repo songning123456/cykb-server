@@ -15,5 +15,5 @@ public class UsersDTO {
 
     private String avatar;
 
-    private String gender;
+    private Integer gender;
 }

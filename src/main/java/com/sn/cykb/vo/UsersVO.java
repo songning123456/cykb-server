@@ -16,5 +16,5 @@ public class UsersVO {
 
     private String nickName;
 
-    private String gender;
+    private Integer gender;
 }

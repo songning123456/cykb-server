@@ -1,6 +1,5 @@
 package com.sn.cykb;
 
-import com.sn.cykb.entity.Chapters;
 import com.sn.cykb.entity.Novels;
 import com.sn.cykb.entity.UsersNovelsRelation;
 import com.sn.cykb.repository.ChaptersRepository;
@@ -9,7 +8,6 @@ import com.sn.cykb.repository.UsersNovelsRelationRepository;
 import com.sn.cykb.util.HttpUtil;
 import com.sn.cykb.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
@@ -19,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -117,10 +116,13 @@ public class CykbServerApplicationTests {
         List<Novels> novelsList = novelsRepository.findAll();
         String uniqueId = "oP0Dk5Fqq656S4Gfm8eIY3rIXIlE";
         List<UsersNovelsRelation> target = new ArrayList<>();
-        novelsList.forEach(item -> {
-            UsersNovelsRelation relation = UsersNovelsRelation.builder().uniqueId(uniqueId).novelsId(item.getId()).updateTime(new Date()).build();
-            target.add(relation);
-        });
+        for (int i = 0; i< novelsList.size(); i++) {
+            Novels item = novelsList.get(i);
+            if (i < 45) {
+                UsersNovelsRelation relation = UsersNovelsRelation.builder().uniqueId(uniqueId).novelsId(item.getId()).updateTime(new Date()).build();
+                target.add(relation);
+            }
+        }
         usersNovelsRelationRepository.saveAll(target);
     }
 }
