@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 public class NovelsDTO {
 
+    private String novelsId;
+
     private String title;
 
     private String author;
