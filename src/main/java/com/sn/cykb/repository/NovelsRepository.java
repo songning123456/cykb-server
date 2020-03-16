@@ -22,4 +22,7 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
     List<Map<String, Object>> countBySexNative(String sex);
 
     List<Novels> findAllByIdInOrderByUpdateTimeDesc(List<String> novelsIds);
+
+    @Query(value = "select * from novels where sex = ?1 and category = ?2", countQuery = "select count(1) from novels where sex = ?1 and category = ?2", nativeQuery = true)
+    Page<Novels> findBySexAndCategoryNative(String sex, String category, Pageable pageable);
 }

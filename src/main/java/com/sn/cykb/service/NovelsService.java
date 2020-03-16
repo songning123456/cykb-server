@@ -14,4 +14,6 @@ public interface NovelsService {
     CommonDTO<NovelsDTO> homePage(CommonVO<NovelsVO> commonVO);
 
     CommonDTO<NovelsDTO> classify(CommonVO<NovelsVO> commonVO);
+
+    CommonDTO<NovelsDTO> classifyResult(CommonVO<NovelsVO> commonVO);
 }

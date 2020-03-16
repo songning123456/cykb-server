@@ -61,4 +61,22 @@ public class NovelsServiceImpl implements NovelsService {
         commonDTO.setData(target);
         return commonDTO;
     }
+
+    @Override
+    public CommonDTO<NovelsDTO> classifyResult(CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
+        int recordStartNo = commonVO.getRecordStartNo();
+        int pageRecordNum = commonVO.getPageRecordNum();
+        String sex = commonVO.getCondition().getSex();
+        String category = commonVO.getCondition().getCategory();
+        Sort sort = Sort.by(Sort.Direction.ASC, "update_time");
+        Pageable pageable = PageRequest.of(recordStartNo, pageRecordNum, sort);
+        Page<Novels> page = novelsRepository.findBySexAndCategoryNative(sex, category, pageable);
+        List<Novels> src = page.getContent();
+        List<NovelsDTO> target = new ArrayList<>();
+        ClassConvertUtil.populateList(src, target, NovelsDTO.class);
+        commonDTO.setData(target);
+        commonDTO.setTotal(page.getTotalElements());
+        return commonDTO;
+    }
 }

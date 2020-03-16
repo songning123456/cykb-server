@@ -10,4 +10,6 @@ import lombok.Data;
 public class NovelsVO {
 
     private String sex;
+
+    private String category;
 }

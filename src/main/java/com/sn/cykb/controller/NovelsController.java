@@ -3,7 +3,6 @@ package com.sn.cykb.controller;
 import com.sn.cykb.annotation.AControllerAspect;
 import com.sn.cykb.dto.CommonDTO;
 import com.sn.cykb.dto.NovelsDTO;
-import com.sn.cykb.entity.Novels;
 import com.sn.cykb.service.NovelsService;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.NovelsVO;
@@ -35,6 +34,13 @@ public class NovelsController {
     @PostMapping("/classify")
     public CommonDTO<NovelsDTO> classify(@RequestBody CommonVO<NovelsVO> commonVO) {
         CommonDTO<NovelsDTO> commonDTO = novelsService.classify(commonVO);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "分类查询小说")
+    @PostMapping("/classifyResult")
+    public CommonDTO<NovelsDTO> classifyResults(@RequestBody CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = novelsService.classifyResult(commonVO);
         return commonDTO;
     }
 }
