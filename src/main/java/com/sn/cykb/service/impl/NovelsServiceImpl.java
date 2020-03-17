@@ -32,16 +32,20 @@ public class NovelsServiceImpl implements NovelsService {
     @Override
     public CommonDTO<NovelsDTO> homePage(CommonVO<NovelsVO> commonVO) {
         CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
-        int recordStartNo = commonVO.getRecordStartNo();
+        Integer recordStartNo = commonVO.getRecordStartNo();
         int pageRecordNum = commonVO.getPageRecordNum();
-        Sort sort = Sort.by(Sort.Direction.ASC, "update_time");
-        Pageable pageable = PageRequest.of(recordStartNo, pageRecordNum, sort);
-        Page<Novels> page = novelsRepository.findNovelsNative(pageable);
-        List<Novels> src = page.getContent();
+        List<Novels> src;
         List<NovelsDTO> target = new ArrayList<>();
+        if (null != recordStartNo) {
+            // 第一次查询
+            src = novelsRepository.findFirstHomePageNative(pageRecordNum);
+        } else {
+            // 第二次开始查询
+            Long createTime = commonVO.getCondition().getCreateTime();
+            src = novelsRepository.findMoreHomePageNative(createTime, pageRecordNum);
+        }
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
-        commonDTO.setTotal(page.getTotalElements());
         return commonDTO;
     }
 
@@ -65,18 +69,20 @@ public class NovelsServiceImpl implements NovelsService {
     @Override
     public CommonDTO<NovelsDTO> classifyResult(CommonVO<NovelsVO> commonVO) {
         CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
-        int recordStartNo = commonVO.getRecordStartNo();
+        Integer recordStartNo = commonVO.getRecordStartNo();
         int pageRecordNum = commonVO.getPageRecordNum();
         String sex = commonVO.getCondition().getSex();
         String category = commonVO.getCondition().getCategory();
-        Sort sort = Sort.by(Sort.Direction.ASC, "update_time");
-        Pageable pageable = PageRequest.of(recordStartNo, pageRecordNum, sort);
-        Page<Novels> page = novelsRepository.findBySexAndCategoryNative(sex, category, pageable);
-        List<Novels> src = page.getContent();
+        List<Novels> src;
         List<NovelsDTO> target = new ArrayList<>();
+        if (null != recordStartNo) {
+            src = novelsRepository.findFirstClassifyNative(sex, category, pageRecordNum);
+        } else {
+            Long createTime = commonVO.getCondition().getCreateTime();
+            src = novelsRepository.findMoreClassifyNative(sex, category, createTime, pageRecordNum);
+        }
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
-        commonDTO.setTotal(page.getTotalElements());
         return commonDTO;
     }
 }

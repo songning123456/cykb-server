@@ -12,4 +12,6 @@ public class NovelsVO {
     private String sex;
 
     private String category;
+
+    private Long createTime;
 }

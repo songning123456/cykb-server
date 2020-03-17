@@ -26,4 +26,6 @@ public class NovelsDTO {
     private String coverUrl;
 
     private Integer total;
+
+    private Long createTime;
 }

@@ -109,4 +109,13 @@ public class DateUtil {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return calendar.getTime();
     }
+
+    /**
+     * 时间转换为时间戳毫秒
+     * @param date
+     * @return
+     */
+    public static Long dateToLong(Date date) {
+        return date.getTime();
+    }
 }

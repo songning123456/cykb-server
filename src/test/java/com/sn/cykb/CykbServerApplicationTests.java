@@ -5,6 +5,7 @@ import com.sn.cykb.entity.UsersNovelsRelation;
 import com.sn.cykb.repository.ChaptersRepository;
 import com.sn.cykb.repository.NovelsRepository;
 import com.sn.cykb.repository.UsersNovelsRelationRepository;
+import com.sn.cykb.util.DateUtil;
 import com.sn.cykb.util.HttpUtil;
 import com.sn.cykb.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -90,7 +90,9 @@ public class CykbServerApplicationTests {
                     String introduction = maininfoElement.getElementById("intro").getElementsByTag("p").get(1).html();
                     String author = infoElement.getElementsByTag("p").get(0).html().split("：")[1];
                     String latestChapter = infoElement.getElementsByTag("p").get(3).getElementsByTag("a").get(0).html();
-                    novels = Novels.builder().title(title).author(author).sex(sex).category(category).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(new Date()).build();
+                    Thread.sleep(1);
+                    Long createTime = DateUtil.dateToLong(new Date());
+                    novels = Novels.builder().title(title).author(author).sex(sex).category(category).createTime(createTime).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(new Date()).build();
                     novels = novelsRepository.save(novels);
                     /*String novelsId = novels.getId();
                     Chapters chapters;
@@ -124,5 +126,20 @@ public class CykbServerApplicationTests {
             }
         }
         usersNovelsRelationRepository.saveAll(target);
+    }
+
+    @Test
+    public void insertCreateTime() {
+        List<Novels> novelsList = novelsRepository.findAll();
+        for (Novels item: novelsList) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Date date = new Date();
+            long ts = date.getTime();
+            novelsRepository.updateCreateTimeNative(ts, item.getId());
+        }
     }
 }

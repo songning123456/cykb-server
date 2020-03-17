@@ -48,4 +48,7 @@ public class Novels {
 
     @Column(name = "updateTime", columnDefinition = "DATETIME NOT NULL COMMENT '更新时间'")
     private Date updateTime;
+
+    @Column(name = "createTime", columnDefinition = "BIGINT NOT NULL COMMENT '创建时间'")
+    private Long createTime;
 }
