@@ -43,4 +43,11 @@ public class NovelsController {
         CommonDTO<NovelsDTO> commonDTO = novelsService.classifyResult(commonVO);
         return commonDTO;
     }
+
+    @AControllerAspect(description = "作者也写过")
+    @PostMapping("/sameAuthor")
+    public CommonDTO<NovelsDTO> sameAuthors(@RequestBody CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = novelsService.sameAuthor(commonVO);
+        return commonDTO;
+    }
 }

@@ -85,4 +85,16 @@ public class NovelsServiceImpl implements NovelsService {
         commonDTO.setData(target);
         return commonDTO;
     }
+
+    @Override
+    public CommonDTO<NovelsDTO> sameAuthor(CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
+        String author = commonVO.getCondition().getAuthor();
+        List<Novels> src = novelsRepository.findByAuthorOrderByCreateTimeDesc(author);
+        List<NovelsDTO> target = new ArrayList<>();
+        ClassConvertUtil.populateList(src, target, NovelsDTO.class);
+        commonDTO.setData(target);
+        commonDTO.setTotal((long)target.size());
+        return commonDTO;
+    }
 }

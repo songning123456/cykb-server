@@ -14,4 +14,6 @@ public class NovelsVO {
     private String category;
 
     private Long createTime;
+
+    private String author;
 }

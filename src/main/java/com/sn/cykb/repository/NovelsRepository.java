@@ -38,4 +38,6 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
     @Transactional
     @Query(value = "update novels set create_time = ?1 where id = ?2", nativeQuery = true)
     void updateCreateTimeNative(Long createTime, String novelsId);
+
+    List<Novels> findByAuthorOrderByCreateTimeDesc(String author);
 }
