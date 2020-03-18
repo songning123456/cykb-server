@@ -1,5 +1,6 @@
 package com.sn.cykb;
 
+import com.sn.cykb.entity.Chapters;
 import com.sn.cykb.entity.Novels;
 import com.sn.cykb.entity.UsersNovelsRelation;
 import com.sn.cykb.repository.ChaptersRepository;
@@ -118,7 +119,7 @@ public class CykbServerApplicationTests {
         List<Novels> novelsList = novelsRepository.findAll();
         String uniqueId = "oP0Dk5Fqq656S4Gfm8eIY3rIXIlE";
         List<UsersNovelsRelation> target = new ArrayList<>();
-        for (int i = 0; i< novelsList.size(); i++) {
+        for (int i = 0; i < novelsList.size(); i++) {
             Novels item = novelsList.get(i);
             if (i < 45) {
                 UsersNovelsRelation relation = UsersNovelsRelation.builder().uniqueId(uniqueId).novelsId(item.getId()).updateTime(new Date()).build();
@@ -131,7 +132,7 @@ public class CykbServerApplicationTests {
     @Test
     public void insertCreateTime() {
         List<Novels> novelsList = novelsRepository.findAll();
-        for (Novels item: novelsList) {
+        for (Novels item : novelsList) {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
@@ -140,6 +141,29 @@ public class CykbServerApplicationTests {
             Date date = new Date();
             long ts = date.getTime();
             novelsRepository.updateCreateTimeNative(ts, item.getId());
+        }
+    }
+
+    @Test
+    public void testInsertChapter() {
+        String novelsId = "402880ea70d712230170d7c35a100154";
+        Chapters chapters;
+        String bookUrl = "http://www.xbiquge.la/8/8345/";
+        Document childDoc = HttpUtil.getHtmlFromUrl(bookUrl, true);
+        Element dlElement = childDoc.getElementById("list").getElementsByTag("dl").get(0);
+        int i = 0;
+        for (Element ddElement : dlElement.getElementsByTag("dd")) {
+            Element a = ddElement.getElementsByTag("a").get(0);
+            String chapter = a.html();
+            String content = "暂无数据";
+            if (i < 10) {
+                String chapterUrl = "http://www.xbiquge.la/" + a.attr("href");
+                Document contentDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
+                content = contentDoc.getElementById("content").html();
+            }
+            chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(new Date()).build();
+            chaptersRepository.save(chapters);
+            i++;
         }
     }
 }
