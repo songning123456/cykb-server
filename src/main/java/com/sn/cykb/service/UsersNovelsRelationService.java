@@ -18,4 +18,6 @@ public interface UsersNovelsRelationService {
     CommonDTO<UsersNovelsRelationDTO> topBookcase(CommonVO<UsersNovelsRelationVO> commonVO);
 
     CommonDTO<UsersNovelsRelationDTO> deleteBookcase(CommonVO<UsersNovelsRelationVO> commonVO);
+
+    CommonDTO<UsersNovelsRelationDTO> beginReading(CommonVO<UsersNovelsRelationVO> commonVO);
 }

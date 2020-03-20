@@ -1,10 +1,13 @@
 package com.sn.cykb.service.impl;
 
 import com.sn.cykb.constant.HttpStatus;
+import com.sn.cykb.dto.ChaptersDTO;
 import com.sn.cykb.dto.CommonDTO;
 import com.sn.cykb.dto.UsersNovelsRelationDTO;
+import com.sn.cykb.entity.Chapters;
 import com.sn.cykb.entity.Novels;
 import com.sn.cykb.entity.UsersNovelsRelation;
+import com.sn.cykb.repository.ChaptersRepository;
 import com.sn.cykb.repository.NovelsRepository;
 import com.sn.cykb.repository.UsersNovelsRelationRepository;
 import com.sn.cykb.service.UsersNovelsRelationService;
@@ -14,9 +17,7 @@ import com.sn.cykb.vo.UsersNovelsRelationVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: songning
@@ -29,6 +30,8 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
     private UsersNovelsRelationRepository usersNovelsRelationRepository;
     @Autowired
     private NovelsRepository novelsRepository;
+    @Autowired
+    private ChaptersRepository chaptersRepository;
 
     @Override
     public CommonDTO<UsersNovelsRelationDTO> bookcase(CommonVO<UsersNovelsRelationVO> commonVO) {
@@ -87,6 +90,33 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         String uniqueId = commonVO.getCondition().getUniqueId();
         String novelsId = commonVO.getCondition().getNovelsId();
         usersNovelsRelationRepository.deleteByUniqueIdAndNovelsId(uniqueId, novelsId);
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<UsersNovelsRelationDTO> beginReading(CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
+        String uniqueId = commonVO.getCondition().getUniqueId();
+        String novelsId = commonVO.getCondition().getNovelsId();
+        Boolean directory = commonVO.getCondition().getDirectory();
+        UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
+        Chapters chapters;
+        if (relation == null) {
+            chapters = chaptersRepository.findTopByNovelsIdNative(novelsId);
+            usersNovelsRelationRepository.updateByChapterIdNative(chapters.getId(), uniqueId, novelsId);
+        } else {
+            String currentChapterId = relation.getCurrentChapterId();
+            chapters = chaptersRepository.findById(currentChapterId).get();
+        }
+        UsersNovelsRelationDTO dto = new UsersNovelsRelationDTO();
+        dto.setContent(chapters.getContent());
+        commonDTO.setData(Collections.singletonList(dto));
+        if (directory) {
+            Map<String, Object> dataExt = new HashMap<>(2);
+            List<Map<String, Object>> ext = chaptersRepository.findDirectoryNative(novelsId);
+            dataExt.put("directory", ext);
+            commonDTO.setDataExt(dataExt);
+        }
         return commonDTO;
     }
 }

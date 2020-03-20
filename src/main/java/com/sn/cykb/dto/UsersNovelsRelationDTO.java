@@ -20,4 +20,6 @@ public class UsersNovelsRelationDTO {
     private String updateTime;
 
     private String novelsId;
+
+    private String content;
 }

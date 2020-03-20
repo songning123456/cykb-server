@@ -33,6 +33,9 @@ public class UsersNovelsRelation {
     @Column(name = "history", columnDefinition = "VARCHAR(128) COMMENT '当前阅读'")
     private String history;
 
+    @Column(name = "currentChapterId", columnDefinition = "VARCHAR(128) COMMENT '当前阅读ID'")
+    private String currentChapterId;
+
     @Column(name = "updateTime", columnDefinition = "DATETIME NOT NULL COMMENT '更新时间'")
     private Date updateTime;
 }

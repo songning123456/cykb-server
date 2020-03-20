@@ -26,4 +26,11 @@ public interface UsersNovelsRelationRepository extends JpaRepository<UsersNovels
     @Modifying
     @Transactional
     int deleteByUniqueIdAndNovelsId(String uniqueId, String novelsId);
+
+    UsersNovelsRelation findByUniqueIdAndAndNovelsId(String uniqueId, String novelsId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update users_novels_relation set current_chapter_id = ?1 where unique_id = ?2 and novels_id = ?3", nativeQuery = true)
+    void updateByChapterIdNative(String chaptersId, String uniqueId, String novelsId);
 }

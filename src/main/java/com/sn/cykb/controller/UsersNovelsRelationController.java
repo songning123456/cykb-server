@@ -7,10 +7,7 @@ import com.sn.cykb.service.UsersNovelsRelationService;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.UsersNovelsRelationVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: songning
@@ -48,6 +45,13 @@ public class UsersNovelsRelationController {
     @PostMapping("/deleteBookcase")
     public CommonDTO<UsersNovelsRelationDTO> deleteBookcases(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.deleteBookcase(commonVO);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "开始阅读")
+    @PostMapping("/beginReading")
+    public CommonDTO<UsersNovelsRelationDTO> beginReadings(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.beginReading(commonVO);
         return commonDTO;
     }
 }
