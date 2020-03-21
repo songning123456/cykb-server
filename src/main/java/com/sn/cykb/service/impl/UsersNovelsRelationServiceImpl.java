@@ -14,6 +14,7 @@ import com.sn.cykb.service.UsersNovelsRelationService;
 import com.sn.cykb.util.ClassConvertUtil;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.UsersNovelsRelationVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -98,24 +99,31 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
         String uniqueId = commonVO.getCondition().getUniqueId();
         String novelsId = commonVO.getCondition().getNovelsId();
-        Boolean directory = commonVO.getCondition().getDirectory();
         UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
         Chapters chapters;
-        if (relation == null) {
+        // 已加入书架， 但未开始阅读，将第一章加入书架
+        if (StringUtils.isEmpty(relation.getCurrentChapterId())) {
             chapters = chaptersRepository.findTopByNovelsIdNative(novelsId);
-            usersNovelsRelationRepository.updateByChapterIdNative(chapters.getId(), uniqueId, novelsId);
+            usersNovelsRelationRepository.updateChapterIdNative(chapters.getId(), new Date(), uniqueId, novelsId);
         } else {
             String currentChapterId = relation.getCurrentChapterId();
             chapters = chaptersRepository.findById(currentChapterId).get();
+            usersNovelsRelationRepository.updateUpdateTimeNative(new Date(), uniqueId, novelsId);
         }
         UsersNovelsRelationDTO dto = new UsersNovelsRelationDTO();
         dto.setContent(chapters.getContent());
         commonDTO.setData(Collections.singletonList(dto));
-        if (directory) {
-            Map<String, Object> dataExt = new HashMap<>(2);
-            List<Map<String, Object>> ext = chaptersRepository.findDirectoryNative(novelsId);
-            dataExt.put("directory", ext);
-            commonDTO.setDataExt(dataExt);
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<UsersNovelsRelationDTO> isExist(CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
+        String uniqueId = commonVO.getCondition().getUniqueId();
+        String novelsId = commonVO.getCondition().getNovelsId();
+        UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
+        if (relation == null) {
+            commonDTO.setStatus(202);
         }
         return commonDTO;
     }

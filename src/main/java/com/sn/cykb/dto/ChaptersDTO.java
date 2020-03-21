@@ -8,4 +8,8 @@ import lombok.Data;
  */
 @Data
 public class ChaptersDTO {
+
+    private String novelsId;
+
+    private String chapter;
 }

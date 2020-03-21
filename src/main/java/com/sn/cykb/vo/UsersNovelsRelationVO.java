@@ -17,9 +17,4 @@ public class UsersNovelsRelationVO {
      * recentRead; updateTime
      */
     private String sortType;
-
-    /**
-     * 是否需要 加载目录
-     */
-    private Boolean directory;
 }
