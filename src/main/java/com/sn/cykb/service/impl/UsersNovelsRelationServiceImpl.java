@@ -111,8 +111,10 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
             usersNovelsRelationRepository.updateUpdateTimeNative(new Date(), uniqueId, novelsId);
         }
         UsersNovelsRelationDTO dto = new UsersNovelsRelationDTO();
-        dto.setContent(chapters.getContent());
+        ClassConvertUtil.populate(chapters, dto);
         commonDTO.setData(Collections.singletonList(dto));
+        List<Map<String, Object>> ext = chaptersRepository.findDirectoryNative(novelsId);
+        commonDTO.setListExt(ext);
         return commonDTO;
     }
 
@@ -125,6 +127,28 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         if (relation == null) {
             commonDTO.setStatus(202);
         }
+        return commonDTO;
+    }
+
+    @Override
+    public  CommonDTO<UsersNovelsRelationDTO> readNewChapter(CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
+        String uniqueId = commonVO.getCondition().getUniqueId();
+        String novelsId = commonVO.getCondition().getNovelsId();
+        String chaptersId = commonVO.getCondition().getChaptersId();
+        Chapters chapters;
+        // 已登录
+        if (!StringUtils.isEmpty(uniqueId)) {
+            UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
+            // 已加入书架
+            if (relation != null) {
+                usersNovelsRelationRepository.updateByReadMoreNative(uniqueId, novelsId,chaptersId, new Date());
+            }
+        }
+        chapters = chaptersRepository.findById(chaptersId).get();
+        UsersNovelsRelationDTO dto = new UsersNovelsRelationDTO();
+        ClassConvertUtil.populate(chapters, dto);
+        commonDTO.setData(Collections.singletonList(dto));
         return commonDTO;
     }
 }

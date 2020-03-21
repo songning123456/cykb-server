@@ -61,4 +61,11 @@ public class UsersNovelsRelationController {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.isExist(commonVO);
         return commonDTO;
     }
+
+    @AControllerAspect(description = "阅读新的章节")
+    @PostMapping("/readNewChapter")
+    public CommonDTO<UsersNovelsRelationDTO> readNewChapters(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
+        CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.readNewChapter(commonVO);
+        return commonDTO;
+    }
 }

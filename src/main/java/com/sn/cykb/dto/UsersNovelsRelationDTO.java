@@ -17,9 +17,13 @@ public class UsersNovelsRelationDTO {
 
     private String coverUrl;
 
+    private String chapter;
+
     private String updateTime;
 
     private String novelsId;
 
     private String content;
+
+    private String currentChapterId;
 }

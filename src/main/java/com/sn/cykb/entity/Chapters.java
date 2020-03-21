@@ -1,5 +1,6 @@
 package com.sn.cykb.entity;
 
+import com.sn.cykb.annotation.AClassConvert;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -21,6 +22,7 @@ public class Chapters {
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 128)
+    @AClassConvert(fieldName = "currentChapterId")
     private String id;
 
     @Column(name = "chapter", columnDefinition = "VARCHAR(128) NOT NULL COMMENT '章节'")

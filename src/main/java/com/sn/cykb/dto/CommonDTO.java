@@ -15,6 +15,11 @@ public class CommonDTO<T> {
      * 额外数据集
      */
     private Map<String, Object> dataExt;
+
+    /**
+     * 額外的List結果集
+     */
+    private List<Map<String, Object>> listExt;
     /**
      * 状态
      */

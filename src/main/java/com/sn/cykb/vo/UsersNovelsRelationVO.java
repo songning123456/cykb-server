@@ -13,6 +13,8 @@ public class UsersNovelsRelationVO {
 
     private String novelsId;
 
+    private String chaptersId;
+
     /**
      * recentRead; updateTime
      */

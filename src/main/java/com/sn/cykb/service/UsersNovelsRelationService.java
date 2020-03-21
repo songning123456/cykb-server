@@ -22,4 +22,6 @@ public interface UsersNovelsRelationService {
     CommonDTO<UsersNovelsRelationDTO> beginReading(CommonVO<UsersNovelsRelationVO> commonVO);
 
     CommonDTO<UsersNovelsRelationDTO> isExist(CommonVO<UsersNovelsRelationVO> commonVO);
+
+    CommonDTO<UsersNovelsRelationDTO> readNewChapter(CommonVO<UsersNovelsRelationVO> commonVO);
 }

@@ -45,6 +45,8 @@ public class ChaptersServiceImpl implements ChaptersService {
         CommonDTO<ChaptersDTO> commonDTO = new CommonDTO<>();
         String novelsId = commonVO.getCondition().getNovelsId();
         Chapters chapters = chaptersRepository.findTopByNovelsIdNative(novelsId);
+        List<Map<String, Object>> ext = chaptersRepository.findDirectoryNative(novelsId);
+        commonDTO.setListExt(ext);
         ChaptersDTO chaptersDTO = new ChaptersDTO();
         ClassConvertUtil.populate(chapters, chaptersDTO);
         commonDTO.setData(Collections.singletonList(chaptersDTO));
