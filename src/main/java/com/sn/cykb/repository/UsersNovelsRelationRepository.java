@@ -25,22 +25,7 @@ public interface UsersNovelsRelationRepository extends JpaRepository<UsersNovels
 
     @Modifying
     @Transactional
-    @Query(value = "update users_novels_relation set current_chapter_id = ?3, update_time = ?4 where unique_id = ?1 and novels_id = ?2", nativeQuery = true)
-    int updateByReadMoreNative(String uniqueId, String novelsId, String chapterId, Date updateTime);
-
-    @Modifying
-    @Transactional
     int deleteByUniqueIdAndNovelsId(String uniqueId, String novelsId);
 
     UsersNovelsRelation findByUniqueIdAndAndNovelsId(String uniqueId, String novelsId);
-
-    @Modifying
-    @Transactional
-    @Query(value = "update users_novels_relation set current_chapter_id = ?1, update_time = ?2 where unique_id = ?3 and novels_id = ?4", nativeQuery = true)
-    void updateChapterIdNative(String chaptersId, Date updateTime, String uniqueId, String novelsId);
-
-    @Modifying
-    @Transactional
-    @Query(value = "update users_novels_relation set update_time = ?1 where unique_id = ?2 and novels_id = ?3", nativeQuery = true)
-    void updateUpdateTimeNative(Date updateTime, String uniqueId, String novelsId);
 }

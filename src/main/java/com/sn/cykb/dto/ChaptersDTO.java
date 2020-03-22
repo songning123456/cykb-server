@@ -15,5 +15,5 @@ public class ChaptersDTO {
 
     private String content;
 
-    private String currentChapterId;
+    private String chaptersId;
 }

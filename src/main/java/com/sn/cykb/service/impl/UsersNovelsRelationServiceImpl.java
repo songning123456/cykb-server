@@ -1,20 +1,16 @@
 package com.sn.cykb.service.impl;
 
 import com.sn.cykb.constant.HttpStatus;
-import com.sn.cykb.dto.ChaptersDTO;
 import com.sn.cykb.dto.CommonDTO;
 import com.sn.cykb.dto.UsersNovelsRelationDTO;
-import com.sn.cykb.entity.Chapters;
 import com.sn.cykb.entity.Novels;
 import com.sn.cykb.entity.UsersNovelsRelation;
-import com.sn.cykb.repository.ChaptersRepository;
 import com.sn.cykb.repository.NovelsRepository;
 import com.sn.cykb.repository.UsersNovelsRelationRepository;
 import com.sn.cykb.service.UsersNovelsRelationService;
 import com.sn.cykb.util.ClassConvertUtil;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.UsersNovelsRelationVO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +27,6 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
     private UsersNovelsRelationRepository usersNovelsRelationRepository;
     @Autowired
     private NovelsRepository novelsRepository;
-    @Autowired
-    private ChaptersRepository chaptersRepository;
 
     @Override
     public CommonDTO<UsersNovelsRelationDTO> bookcase(CommonVO<UsersNovelsRelationVO> commonVO) {
@@ -81,7 +75,10 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
         String uniqueId = commonVO.getCondition().getUniqueId();
         String novelsId = commonVO.getCondition().getNovelsId();
-        usersNovelsRelationRepository.updateByRecentReadNative(uniqueId, novelsId, new Date());
+        UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
+        if (relation != null) {
+            usersNovelsRelationRepository.updateByRecentReadNative(uniqueId, novelsId, new Date());
+        }
         return commonDTO;
     }
 
@@ -95,30 +92,6 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
     }
 
     @Override
-    public CommonDTO<UsersNovelsRelationDTO> beginReading(CommonVO<UsersNovelsRelationVO> commonVO) {
-        CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
-        String uniqueId = commonVO.getCondition().getUniqueId();
-        String novelsId = commonVO.getCondition().getNovelsId();
-        UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
-        Chapters chapters;
-        // 已加入书架， 但未开始阅读，将第一章加入书架
-        if (StringUtils.isEmpty(relation.getCurrentChapterId())) {
-            chapters = chaptersRepository.findTopByNovelsIdNative(novelsId);
-            usersNovelsRelationRepository.updateChapterIdNative(chapters.getId(), new Date(), uniqueId, novelsId);
-        } else {
-            String currentChapterId = relation.getCurrentChapterId();
-            chapters = chaptersRepository.findById(currentChapterId).get();
-            usersNovelsRelationRepository.updateUpdateTimeNative(new Date(), uniqueId, novelsId);
-        }
-        UsersNovelsRelationDTO dto = new UsersNovelsRelationDTO();
-        ClassConvertUtil.populate(chapters, dto);
-        commonDTO.setData(Collections.singletonList(dto));
-        List<Map<String, Object>> ext = chaptersRepository.findDirectoryNative(novelsId);
-        commonDTO.setListExt(ext);
-        return commonDTO;
-    }
-
-    @Override
     public CommonDTO<UsersNovelsRelationDTO> isExist(CommonVO<UsersNovelsRelationVO> commonVO) {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
         String uniqueId = commonVO.getCondition().getUniqueId();
@@ -127,28 +100,6 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         if (relation == null) {
             commonDTO.setStatus(202);
         }
-        return commonDTO;
-    }
-
-    @Override
-    public  CommonDTO<UsersNovelsRelationDTO> readNewChapter(CommonVO<UsersNovelsRelationVO> commonVO) {
-        CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
-        String uniqueId = commonVO.getCondition().getUniqueId();
-        String novelsId = commonVO.getCondition().getNovelsId();
-        String chaptersId = commonVO.getCondition().getChaptersId();
-        Chapters chapters;
-        // 已登录
-        if (!StringUtils.isEmpty(uniqueId)) {
-            UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
-            // 已加入书架
-            if (relation != null) {
-                usersNovelsRelationRepository.updateByReadMoreNative(uniqueId, novelsId,chaptersId, new Date());
-            }
-        }
-        chapters = chaptersRepository.findById(chaptersId).get();
-        UsersNovelsRelationDTO dto = new UsersNovelsRelationDTO();
-        ClassConvertUtil.populate(chapters, dto);
-        commonDTO.setData(Collections.singletonList(dto));
         return commonDTO;
     }
 }

@@ -8,6 +8,7 @@ import com.sn.cykb.service.ChaptersService;
 import com.sn.cykb.util.ClassConvertUtil;
 import com.sn.cykb.vo.ChaptersVO;
 import com.sn.cykb.vo.CommonVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,14 +42,27 @@ public class ChaptersServiceImpl implements ChaptersService {
     }
 
     @Override
-    public CommonDTO<ChaptersDTO> unknownTop(CommonVO<ChaptersVO> commonVO) {
+    public CommonDTO<ChaptersDTO> firstChapter(String novelsId) {
         CommonDTO<ChaptersDTO> commonDTO = new CommonDTO<>();
-        String novelsId = commonVO.getCondition().getNovelsId();
         Chapters chapters = chaptersRepository.findTopByNovelsIdNative(novelsId);
         List<Map<String, Object>> ext = chaptersRepository.findDirectoryNative(novelsId);
         commonDTO.setListExt(ext);
         ChaptersDTO chaptersDTO = new ChaptersDTO();
         ClassConvertUtil.populate(chapters, chaptersDTO);
+        commonDTO.setData(Collections.singletonList(chaptersDTO));
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<ChaptersDTO> readMore(String novelsId, String chaptersId) {
+        CommonDTO<ChaptersDTO> commonDTO = new CommonDTO<>();
+        Chapters chapters = chaptersRepository.findById(chaptersId).get();
+        ChaptersDTO chaptersDTO = new ChaptersDTO();
+        ClassConvertUtil.populate(chapters, chaptersDTO);
+        if (!StringUtils.isEmpty(novelsId)) {
+            List<Map<String, Object>> ext = chaptersRepository.findDirectoryNative(novelsId);
+            commonDTO.setListExt(ext);
+        }
         commonDTO.setData(Collections.singletonList(chaptersDTO));
         return commonDTO;
     }

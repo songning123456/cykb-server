@@ -13,5 +13,7 @@ public interface ChaptersService {
 
     CommonDTO<ChaptersDTO> directory(CommonVO<ChaptersVO> commonVO);
 
-    CommonDTO<ChaptersDTO> unknownTop(CommonVO<ChaptersVO> commonVO);
+    CommonDTO<ChaptersDTO> firstChapter(String novelsId);
+
+    CommonDTO<ChaptersDTO> readMore(String novelsId,String chaptersId);
 }

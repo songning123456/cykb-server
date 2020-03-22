@@ -48,24 +48,10 @@ public class UsersNovelsRelationController {
         return commonDTO;
     }
 
-    @AControllerAspect(description = "开始阅读")
-    @PostMapping("/beginReading")
-    public CommonDTO<UsersNovelsRelationDTO> beginReadings(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
-        CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.beginReading(commonVO);
-        return commonDTO;
-    }
-
     @AControllerAspect(description = "是否存在在书架")
     @PostMapping("/isExist")
     public CommonDTO<UsersNovelsRelationDTO> isExists(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.isExist(commonVO);
-        return commonDTO;
-    }
-
-    @AControllerAspect(description = "阅读新的章节")
-    @PostMapping("/readNewChapter")
-    public CommonDTO<UsersNovelsRelationDTO> readNewChapters(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
-        CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.readNewChapter(commonVO);
         return commonDTO;
     }
 }

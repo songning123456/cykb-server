@@ -7,10 +7,7 @@ import com.sn.cykb.service.ChaptersService;
 import com.sn.cykb.vo.ChaptersVO;
 import com.sn.cykb.vo.CommonVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: songning
@@ -30,10 +27,17 @@ public class ChaptersController {
         return commonDTO;
     }
 
-    @AControllerAspect(description = "未登录/未加入书架 每次都从第一章开始")
-    @PostMapping("/unknownTop")
-    public CommonDTO<ChaptersDTO> unknownTops(@RequestBody CommonVO<ChaptersVO> commonVO) {
-        CommonDTO<ChaptersDTO> commonDTO = chaptersService.unknownTop(commonVO);
+    @AControllerAspect(description = "从未阅读过/删除浏览器缓存 每次都从第一章开始")
+    @GetMapping("/firstChapter")
+    public CommonDTO<ChaptersDTO> firstChapters(@RequestParam(value = "novelsId") String novelsId) {
+        CommonDTO<ChaptersDTO> commonDTO = chaptersService.firstChapter(novelsId);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "根据浏览器缓存的chaptersId 阅读")
+    @GetMapping("/readMore")
+    public CommonDTO<ChaptersDTO> readMores(@RequestParam(value = "novelsId") String novelsId, @RequestParam(value = "chaptersId") String chaptersId) {
+        CommonDTO<ChaptersDTO> commonDTO = chaptersService.readMore(novelsId, chaptersId);
         return commonDTO;
     }
 }

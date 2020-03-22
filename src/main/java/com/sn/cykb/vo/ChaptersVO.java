@@ -10,4 +10,6 @@ import lombok.Data;
 public class ChaptersVO {
 
     private String novelsId;
+
+    private String chaptersId;
 }

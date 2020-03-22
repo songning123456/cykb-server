@@ -13,8 +13,6 @@ public class UsersNovelsRelationDTO {
 
     private String author;
 
-    private String latestChapter;
-
     private String coverUrl;
 
     private String chapter;
@@ -25,5 +23,5 @@ public class UsersNovelsRelationDTO {
 
     private String content;
 
-    private String currentChapterId;
+    private String chaptersId;
 }

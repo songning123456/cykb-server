@@ -22,7 +22,7 @@ public class Chapters {
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 128)
-    @AClassConvert(fieldName = "currentChapterId")
+    @AClassConvert(fieldName = "chaptersId")
     private String id;
 
     @Column(name = "chapter", columnDefinition = "VARCHAR(128) NOT NULL COMMENT '章节'")

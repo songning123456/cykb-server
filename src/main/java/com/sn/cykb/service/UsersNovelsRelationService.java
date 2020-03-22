@@ -19,9 +19,5 @@ public interface UsersNovelsRelationService {
 
     CommonDTO<UsersNovelsRelationDTO> deleteBookcase(CommonVO<UsersNovelsRelationVO> commonVO);
 
-    CommonDTO<UsersNovelsRelationDTO> beginReading(CommonVO<UsersNovelsRelationVO> commonVO);
-
     CommonDTO<UsersNovelsRelationDTO> isExist(CommonVO<UsersNovelsRelationVO> commonVO);
-
-    CommonDTO<UsersNovelsRelationDTO> readNewChapter(CommonVO<UsersNovelsRelationVO> commonVO);
 }
