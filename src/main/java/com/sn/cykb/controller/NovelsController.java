@@ -7,10 +7,7 @@ import com.sn.cykb.service.NovelsService;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.NovelsVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: songning
@@ -48,6 +45,13 @@ public class NovelsController {
     @PostMapping("/sameAuthor")
     public CommonDTO<NovelsDTO> sameAuthors(@RequestBody CommonVO<NovelsVO> commonVO) {
         CommonDTO<NovelsDTO> commonDTO = novelsService.sameAuthor(commonVO);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "快速搜索")
+    @GetMapping("/fastSearch")
+    public CommonDTO<NovelsDTO> fastSearches(@RequestParam(value = "authorOrTitle") String authorOrTitle) {
+        CommonDTO<NovelsDTO> commonDTO = novelsService.fastSearch(authorOrTitle);
         return commonDTO;
     }
 }

@@ -18,4 +18,6 @@ public interface NovelsService {
     CommonDTO<NovelsDTO> classifyResult(CommonVO<NovelsVO> commonVO);
 
     CommonDTO<NovelsDTO> sameAuthor(CommonVO<NovelsVO> commonVO);
+
+    CommonDTO<NovelsDTO> fastSearch(String authorOrTitle);
 }

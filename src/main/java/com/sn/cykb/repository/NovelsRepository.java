@@ -40,4 +40,7 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
     void updateCreateTimeNative(Long createTime, String novelsId);
 
     List<Novels> findByAuthorOrderByCreateTimeDesc(String author);
+
+    @Query(value = "select * from novels where author like concat('%', ?1, '%') or title like concat('%', ?1, '%') limit 10", nativeQuery = true)
+    List<Novels> findByAuthorOrTitleNative(String authorOrTitle);
 }

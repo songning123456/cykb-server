@@ -93,4 +93,14 @@ public class NovelsServiceImpl implements NovelsService {
         commonDTO.setTotal((long)target.size());
         return commonDTO;
     }
+
+    @Override
+    public CommonDTO<NovelsDTO> fastSearch(String authorOrTitle) {
+        CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
+        List<Novels> src = novelsRepository.findByAuthorOrTitleNative(authorOrTitle);
+        List<NovelsDTO> target = new ArrayList<>();
+        ClassConvertUtil.populateList(src, target, NovelsDTO.class);
+        commonDTO.setData(target);
+        return commonDTO;
+    }
 }
