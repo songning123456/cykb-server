@@ -20,4 +20,8 @@ public interface NovelsService {
     CommonDTO<NovelsDTO> sameAuthor(CommonVO<NovelsVO> commonVO);
 
     CommonDTO<NovelsDTO> fastSearch(String authorOrTitle);
+
+    CommonDTO<NovelsDTO> nativeSearch( CommonVO<NovelsVO> commonVO);
+
+    CommonDTO<NovelsDTO> ecdemicSearch( CommonVO<NovelsVO> commonVO);
 }

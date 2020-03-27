@@ -90,7 +90,7 @@ public class NovelsServiceImpl implements NovelsService {
         List<NovelsDTO> target = new ArrayList<>();
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
-        commonDTO.setTotal((long)target.size());
+        commonDTO.setTotal((long) target.size());
         return commonDTO;
     }
 
@@ -101,6 +101,32 @@ public class NovelsServiceImpl implements NovelsService {
         List<NovelsDTO> target = new ArrayList<>();
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<NovelsDTO> nativeSearch(CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
+        Integer recordStartNo = commonVO.getRecordStartNo();
+        int pageRecordNum = commonVO.getPageRecordNum();
+        String authorOrTitle = commonVO.getCondition().getAuthorOrTitle();
+        List<Novels> src;
+        List<NovelsDTO> target = new ArrayList<>();
+        if (recordStartNo != null) {
+            src = novelsRepository.findFirstByAuthorOrTitleNative(authorOrTitle, pageRecordNum);
+        } else {
+            Long createTime = commonVO.getCondition().getCreateTime();
+            src = novelsRepository.findMoreByAuthorOrTitleNative(authorOrTitle, createTime, pageRecordNum);
+        }
+        ClassConvertUtil.populateList(src, target, NovelsDTO.class);
+        commonDTO.setData(target);
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<NovelsDTO> ecdemicSearch(CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
+        List<String> source = commonVO.getCondition().getSource();
         return commonDTO;
     }
 }

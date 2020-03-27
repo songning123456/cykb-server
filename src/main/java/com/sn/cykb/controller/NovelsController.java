@@ -54,4 +54,18 @@ public class NovelsController {
         CommonDTO<NovelsDTO> commonDTO = novelsService.fastSearch(authorOrTitle);
         return commonDTO;
     }
+
+    @AControllerAspect(description = "本地搜索")
+    @PostMapping("/nativeSearch")
+    public CommonDTO<NovelsDTO> nativeSearches(@RequestBody CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = novelsService.nativeSearch(commonVO);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "外网搜索")
+    @PostMapping("/ecdemicSearch")
+    public CommonDTO<NovelsDTO> ecdemicSearches(@RequestBody CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = novelsService.ecdemicSearch(commonVO);
+        return commonDTO;
+    }
 }

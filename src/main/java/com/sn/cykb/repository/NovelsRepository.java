@@ -43,4 +43,10 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
 
     @Query(value = "select * from novels where author like concat('%', ?1, '%') or title like concat('%', ?1, '%') limit 10", nativeQuery = true)
     List<Novels> findByAuthorOrTitleNative(String authorOrTitle);
+
+    @Query(value = "select * from novels where author like concat('%', ?1, '%') or title like concat('%', ?1, '%') order by create_time desc limit ?2", nativeQuery = true)
+    List<Novels> findFirstByAuthorOrTitleNative(String authorOrTitle, int size);
+
+    @Query(value = "select * from novels where (author like concat('%', ?1, '%') or title like concat('%', ?1, '%')) and create_time < ?2  order by create_time desc limit ?3", nativeQuery = true)
+    List<Novels> findMoreByAuthorOrTitleNative(String authorOrTitle, Long createTime, int size);
 }
