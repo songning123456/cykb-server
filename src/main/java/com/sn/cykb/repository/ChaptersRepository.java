@@ -21,4 +21,6 @@ public interface ChaptersRepository extends JpaRepository<Chapters, String> {
     List<Map<String, Object>> findDirectoryNative(String novelsId);
 
     Optional<Chapters> findById(String id);
+
+    List<Chapters> findByChapterAndNovelsId(String chapter, String novelsId);
 }

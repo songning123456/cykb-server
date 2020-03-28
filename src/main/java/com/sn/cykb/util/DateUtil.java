@@ -118,4 +118,25 @@ public class DateUtil {
     public static Long dateToLong(Date date) {
         return date.getTime();
     }
+
+    /**
+     * 当前时间 往前推多少天
+     * @param strCurrentTime
+     * @param interval
+     * @return
+     */
+    public static Date intervalTime(String strCurrentTime, int interval) {
+        Date currentTime = DateUtil.strToDate(strCurrentTime, "yyyy-MM-dd HH:mm:ss");
+        Long oneDay = (long) (24 * 60 * 60 * 1000);
+        Long lgCurrentTime = currentTime.getTime();
+        Long lgStartTime = lgCurrentTime - (interval * oneDay);
+        Date startTime = new Date(lgStartTime);
+        String strStartTime = DateUtil.dateToStr(startTime, "yyyy-MM-dd HH:mm:ss");
+        System.out.println(strStartTime);
+        return startTime;
+    }
+
+    public static void main(String[] args) {
+       DateUtil.intervalTime("2020-03-28 13:34:45", 1000);
+    }
 }

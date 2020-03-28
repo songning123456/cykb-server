@@ -31,9 +31,6 @@ public class Novels {
     @Column(name = "author", columnDefinition = "VARCHAR(64) NOT NULL COMMENT '作者' default '未知作者'")
     private String author;
 
-    @Column(name = "sex", columnDefinition = "VARCHAR(8) NOT NULL default 'sex' COMMENT 'male/female(男频/女频)'")
-    private String sex;
-
     @Column(name = "category", columnDefinition = "VARCHAR(24) NOT NULL default 'dushi' COMMENT '类别(玄幻/都市)'")
     private String category;
 
@@ -41,6 +38,7 @@ public class Novels {
     private String introduction;
 
     @Column(name = "latestChapter", columnDefinition = "VARCHAR(64) NOT NULL default '暂无' COMMENT '最新章节'")
+    @AClassConvert(fieldName = "chapter")
     private String latestChapter;
 
     @Column(name = "coverUrl", columnDefinition = "VARCHAR(128) default '暂无' COMMENT '封面'")
@@ -51,4 +49,10 @@ public class Novels {
 
     @Column(name = "createTime", columnDefinition = "BIGINT NOT NULL COMMENT '创建时间'")
     private Long createTime;
+
+    @Column(name = "sourceUrl", columnDefinition = "VARCHAR(128) default '暂无' COMMENT '来源url'")
+    private String sourceUrl;
+
+    @Column(name = "sourceName", columnDefinition = "VARCHAR(128) default '暂无' COMMENT '来源url'")
+    private String sourceName;
 }

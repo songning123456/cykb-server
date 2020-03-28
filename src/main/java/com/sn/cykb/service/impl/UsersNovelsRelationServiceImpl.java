@@ -65,7 +65,13 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
         String novelsId = commonVO.getCondition().getNovelsId();
         String uniqueId = commonVO.getCondition().getUniqueId();
-        UsersNovelsRelation relation = UsersNovelsRelation.builder().novelsId(novelsId).uniqueId(uniqueId).updateTime(new Date()).build();
+        UsersNovelsRelation relation = usersNovelsRelationRepository.findByUniqueIdAndAndNovelsId(uniqueId, novelsId);
+        if (relation != null) {
+            commonDTO.setStatus(201);
+            commonDTO.setMessage("书架已存在此书");
+            return commonDTO;
+        }
+        relation = UsersNovelsRelation.builder().novelsId(novelsId).uniqueId(uniqueId).updateTime(new Date()).build();
         usersNovelsRelationRepository.save(relation);
         return commonDTO;
     }

@@ -15,8 +15,6 @@ public class NovelsDTO {
 
     private String author;
 
-    private String sex;
-
     private String category;
 
     private String introduction;
@@ -28,4 +26,8 @@ public class NovelsDTO {
     private Integer total;
 
     private Long createTime;
+
+    private String sourceUrl;
+
+    private String sourceName;
 }

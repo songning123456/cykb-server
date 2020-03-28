@@ -46,14 +46,13 @@ public class NovelsServiceImpl implements NovelsService {
     }
 
     @Override
-    public CommonDTO<NovelsDTO> classify(CommonVO<NovelsVO> commonVO) {
+    public CommonDTO<NovelsDTO> classifyCount() {
         CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
-        String sex = commonVO.getCondition().getSex();
-        List<Map<String, Object>> src = novelsRepository.countBySexNative(sex);
+        List<Map<String, Object>> src = novelsRepository.countSourceNative();
         List<NovelsDTO> target = new ArrayList<>();
         src.forEach(item -> {
             NovelsDTO dto = new NovelsDTO();
-            dto.setCategory(String.valueOf(item.get("category")));
+            dto.setSourceName(String.valueOf(item.get("sourceName")));
             dto.setTotal(Integer.parseInt(item.get("total").toString()));
             target.add(dto);
         });
@@ -67,15 +66,14 @@ public class NovelsServiceImpl implements NovelsService {
         CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
         Integer recordStartNo = commonVO.getRecordStartNo();
         int pageRecordNum = commonVO.getPageRecordNum();
-        String sex = commonVO.getCondition().getSex();
-        String category = commonVO.getCondition().getCategory();
+        String sourceName = commonVO.getCondition().getSourceName();
         List<Novels> src;
         List<NovelsDTO> target = new ArrayList<>();
         if (null != recordStartNo) {
-            src = novelsRepository.findFirstClassifyNative(sex, category, pageRecordNum);
+            src = novelsRepository.findFirstClassifyNative(sourceName, pageRecordNum);
         } else {
             Long createTime = commonVO.getCondition().getCreateTime();
-            src = novelsRepository.findMoreClassifyNative(sex, category, createTime, pageRecordNum);
+            src = novelsRepository.findMoreClassifyNative(sourceName, createTime, pageRecordNum);
         }
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
@@ -105,7 +103,7 @@ public class NovelsServiceImpl implements NovelsService {
     }
 
     @Override
-    public CommonDTO<NovelsDTO> nativeSearch(CommonVO<NovelsVO> commonVO) {
+    public CommonDTO<NovelsDTO> searchResult(CommonVO<NovelsVO> commonVO) {
         CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
         Integer recordStartNo = commonVO.getRecordStartNo();
         int pageRecordNum = commonVO.getPageRecordNum();
@@ -120,13 +118,6 @@ public class NovelsServiceImpl implements NovelsService {
         }
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
-        return commonDTO;
-    }
-
-    @Override
-    public CommonDTO<NovelsDTO> ecdemicSearch(CommonVO<NovelsVO> commonVO) {
-        CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
-        List<String> source = commonVO.getCondition().getSource();
         return commonDTO;
     }
 }

@@ -13,7 +13,7 @@ public interface NovelsService {
 
     CommonDTO<NovelsDTO> homePage(CommonVO<NovelsVO> commonVO);
 
-    CommonDTO<NovelsDTO> classify(CommonVO<NovelsVO> commonVO);
+    CommonDTO<NovelsDTO> classifyCount();
 
     CommonDTO<NovelsDTO> classifyResult(CommonVO<NovelsVO> commonVO);
 
@@ -21,7 +21,5 @@ public interface NovelsService {
 
     CommonDTO<NovelsDTO> fastSearch(String authorOrTitle);
 
-    CommonDTO<NovelsDTO> nativeSearch( CommonVO<NovelsVO> commonVO);
-
-    CommonDTO<NovelsDTO> ecdemicSearch( CommonVO<NovelsVO> commonVO);
+    CommonDTO<NovelsDTO> searchResult( CommonVO<NovelsVO> commonVO);
 }

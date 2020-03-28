@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,28 +33,6 @@ public class CykbServerApplicationTests {
     @Autowired
     private UsersNovelsRelationRepository usersNovelsRelationRepository;
 
-    @Test
-    public void contextLoads() {
-        System.out.println("TEST");
-    }
-
-    private static List<String> NOVEL_MALE = Arrays.asList(
-            "xuanhuan", "qihuan", "wuxia", "xianxia", "dushi",
-            "zhichang", "xianshi", "lishi", "junshi", "youxi",
-            "tiyu", "kehuan", "xuanyi", "qingxiaoshuo", "tongren");
-
-    private static List<String> NOVEL_FEMALE = Arrays.asList(
-            "gudaiyanqing", "xiandaiyanqing", "xuanhuanyanqing", "xuanyituili", "langmanqingchun",
-            "xianxiaqiyuan", "kehuankongjian", "youxijingji", "qingxiaoshuo", "xianshishenghuo");
-
-    private static Map<String, List<String>> NOVEL_MAP;
-
-    static {
-        NOVEL_MAP = new HashMap<>(2);
-        NOVEL_MAP.put("male", NOVEL_MALE);
-        NOVEL_MAP.put("female", NOVEL_FEMALE);
-    }
-
     /**
      * 获取笔趣阁书籍目录
      */
@@ -61,29 +40,14 @@ public class CykbServerApplicationTests {
     public void theftBixuge() {
         try {
             Document html;
-            String url = "http://www.xbiquge.la/xiaoshuodaquan/";
-            html = HttpUtil.getHtmlFromUrl(url, true);
+            String source = "http://www.xbiquge.la/xiaoshuodaquan/";
+            html = HttpUtil.getHtmlFromUrl(source, true);
             Element mainElement = html.getElementById("main");
-            for (Element novellistElement : mainElement.getElementsByClass("novellist")) {
-//                String category = novellist.getElementsByTag("h2").get(0).html();
-                Element ulElement = novellistElement.getElementsByTag("ul").get(0);
-                for (Element aElement : ulElement.getElementsByTag("a")) {
-                    int sexRandom = Integer.parseInt(RandomUtil.getRandom(0, 1));
+            for (int i = 0, iLen = mainElement.getElementsByClass("novellist").size(); i < 1; i++) {
+                Element ulElement = mainElement.getElementsByClass("novellist").get(i).getElementsByTag("ul").get(0);
+                for (int j = 0, jLen = ulElement.getElementsByTag("a").size(); j < 3; j++) {
                     Novels novels = new Novels();
-                    int categoryRandom = 0;
-                    String category = "";
-                    String sex = "";
-                    if (sexRandom == 0) {
-                        sex = "male";
-                        categoryRandom = Integer.parseInt(RandomUtil.getRandom(0, 14));
-                        category = NOVEL_MAP.get("male").get(categoryRandom);
-                    } else {
-                        sex = "female";
-                        categoryRandom = Integer.parseInt(RandomUtil.getRandom(0, 9));
-                        category = NOVEL_MAP.get("female").get(categoryRandom);
-                    }
-                    String title = aElement.html();
-                    String bookUrl = aElement.attr("href");
+                    String bookUrl = ulElement.getElementsByTag("a").get(j).attr("href");
                     Document childDoc = HttpUtil.getHtmlFromUrl(bookUrl, true);
                     Element maininfoElement = childDoc.getElementById("maininfo");
                     String coverUrl = childDoc.getElementById("sidebar").getElementsByTag("img").get(0).attr("src");
@@ -93,20 +57,33 @@ public class CykbServerApplicationTests {
                     String latestChapter = infoElement.getElementsByTag("p").get(3).getElementsByTag("a").get(0).html();
                     Thread.sleep(1);
                     Long createTime = DateUtil.dateToLong(new Date());
-                    novels = Novels.builder().title(title).author(author).sex(sex).category(category).createTime(createTime).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(new Date()).build();
+                    String title = infoElement.getElementsByTag("h1").html();
+                    String category = childDoc.getElementsByClass("con_top").get(0).getElementsByTag("a").get(2).html();
+                    String strUpdateTime = infoElement.getElementsByTag("p").get(2).html().split("：")[1];
+                    Date updateTime = DateUtil.strToDate(strUpdateTime, "yyyy-MM-dd HH:mm:ss");
+                    novels = Novels.builder().title(title).author(author).sourceUrl(bookUrl).sourceName("笔趣阁").category(category).createTime(createTime).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(updateTime).build();
+                    List<Novels> jNovels = novelsRepository.findBySourceUrl(bookUrl);
+                    if (jNovels != null && jNovels.size() > 0) {
+                        continue;
+                    }
                     novels = novelsRepository.save(novels);
-                    /*String novelsId = novels.getId();
+                    String novelsId = novels.getId();
                     Chapters chapters;
                     Element dlElement = childDoc.getElementById("list").getElementsByTag("dl").get(0);
-                    for (Element ddElement : dlElement.getElementsByTag("dd")) {
-                        Element a = ddElement.getElementsByTag("a").get(0);
+                    for (int k = 0, kLen = dlElement.getElementsByTag("dd").size(); k < 20; k++) {
+                        Element a = dlElement.getElementsByTag("dd").get(k).getElementsByTag("a").get(0);
                         String chapter = a.html();
+                        List<Chapters> kChapters = chaptersRepository.findByChapterAndNovelsId(chapter, novelsId);
+                        if (kChapters != null && kChapters.size() > 0) {
+                            continue;
+                        }
                         String chapterUrl = "http://www.xbiquge.la/" + a.attr("href");
                         Document contentDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
                         String content = contentDoc.getElementById("content").html();
-                        chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(new Date()).build();
+                        Date chapterUpTime = DateUtil.intervalTime(strUpdateTime, kLen - k - 1);
+                        chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(chapterUpTime).build();
                         chaptersRepository.save(chapters);
-                    }*/
+                    }
                 }
             }
         } catch (Exception e) {
@@ -164,6 +141,32 @@ public class CykbServerApplicationTests {
             chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(new Date()).build();
             chaptersRepository.save(chapters);
             i++;
+        }
+    }
+
+    @Test
+    public void theft147xs() {
+        String url = "http://www.147xiaoshuo.com/search.php?keyword=";
+        String authorOrTitle = "完美世界";
+        Document document = HttpUtil.getHtmlFromUrl(url + authorOrTitle, true);
+        Element bookList = document.getElementById("bookcase_list");
+        for (Element tr : bookList.getElementsByTag("tr")) {
+            Element td = tr.getElementsByTag("td").get(0);
+            String detailUrl = td.getElementsByTag("a").get(0).attr("href");
+            Document detailDoc = HttpUtil.getHtmlFromUrl(detailUrl, true);
+            String title = detailDoc.getElementById("info").getElementsByTag("h1").get(0).html();
+            String authorParam = detailDoc.getElementById("info").getElementsByTag("p").get(0).html();
+            String author = "未知";
+            if (StringUtils.isNotBlank(authorParam) && authorParam.contains(":")) {
+                author = authorParam.split(":")[1];
+            }
+            String category = detailDoc.getElementsByClass("con_top").get(0).getElementsByTag("a").get(1).html();
+            String introduction = detailDoc.getElementById("intro").html();
+            String latestChapterParam = detailDoc.getElementById("info").getElementsByTag("p").get(3).getElementsByTag("a").get(0).html();
+            String updateTime = "";
+
+            String coverUrl = "";
+            String source = "";
         }
     }
 }

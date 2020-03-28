@@ -11,8 +11,6 @@ import java.util.List;
 @Data
 public class NovelsVO {
 
-    private String sex;
-
     private String category;
 
     private Long createTime;
@@ -30,7 +28,7 @@ public class NovelsVO {
     private String searchType;
 
     /**
-     * 全网搜索 来源
+     * 搜索来源
      */
-    private List<String> source;
+    private String sourceName;
 }

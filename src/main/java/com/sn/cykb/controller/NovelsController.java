@@ -28,9 +28,9 @@ public class NovelsController {
     }
 
     @AControllerAspect(description = "分类统计小说总数")
-    @PostMapping("/classify")
-    public CommonDTO<NovelsDTO> classify(@RequestBody CommonVO<NovelsVO> commonVO) {
-        CommonDTO<NovelsDTO> commonDTO = novelsService.classify(commonVO);
+    @GetMapping("/classifyCount")
+    public CommonDTO<NovelsDTO> classifyCounts() {
+        CommonDTO<NovelsDTO> commonDTO = novelsService.classifyCount();
         return commonDTO;
     }
 
@@ -55,17 +55,10 @@ public class NovelsController {
         return commonDTO;
     }
 
-    @AControllerAspect(description = "本地搜索")
-    @PostMapping("/nativeSearch")
-    public CommonDTO<NovelsDTO> nativeSearches(@RequestBody CommonVO<NovelsVO> commonVO) {
-        CommonDTO<NovelsDTO> commonDTO = novelsService.nativeSearch(commonVO);
-        return commonDTO;
-    }
-
-    @AControllerAspect(description = "外网搜索")
-    @PostMapping("/ecdemicSearch")
-    public CommonDTO<NovelsDTO> ecdemicSearches(@RequestBody CommonVO<NovelsVO> commonVO) {
-        CommonDTO<NovelsDTO> commonDTO = novelsService.ecdemicSearch(commonVO);
+    @AControllerAspect(description = "搜索结果")
+    @PostMapping("/searchResult")
+    public CommonDTO<NovelsDTO> searchResults(@RequestBody CommonVO<NovelsVO> commonVO) {
+        CommonDTO<NovelsDTO> commonDTO = novelsService.searchResult(commonVO);
         return commonDTO;
     }
 }
