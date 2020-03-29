@@ -12,6 +12,7 @@ import com.sn.cykb.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.print.Doc;
 import java.util.*;
 
 @Slf4j
@@ -159,27 +161,59 @@ public class CykbServerApplicationTests {
 
     @Test
     public void theft147xs() {
-        String url = "http://www.147xiaoshuo.com/search.php?keyword=";
-        String authorOrTitle = "完美世界";
-        Document document = HttpUtil.getHtmlFromUrl(url + authorOrTitle, true);
-        Element bookList = document.getElementById("bookcase_list");
-        for (Element tr : bookList.getElementsByTag("tr")) {
-            Element td = tr.getElementsByTag("td").get(0);
-            String detailUrl = td.getElementsByTag("a").get(0).attr("href");
-            Document detailDoc = HttpUtil.getHtmlFromUrl(detailUrl, true);
-            String title = detailDoc.getElementById("info").getElementsByTag("h1").get(0).html();
-            String authorParam = detailDoc.getElementById("info").getElementsByTag("p").get(0).html();
-            String author = "未知";
-            if (StringUtils.isNotBlank(authorParam) && authorParam.contains(":")) {
-                author = authorParam.split(":")[1];
+        String prefixUrl = "http://www.147xiaoshuo.com/sort/";
+        List<Integer> suffixList = Arrays.asList(1, 2, 3, 4, 6, 7, 10, 11, 8, 12, 9, 5);
+        for (int i = 0, iLen = suffixList.size(); i < 1; i++) {
+            try {
+                String fullUrl = prefixUrl + suffixList.get(i) + "/";
+                Document novelsDoc = HttpUtil.getHtmlFromUrl(fullUrl, true);
+                Elements liElements = novelsDoc.getElementById("main").getElementsByClass("novellist").get(0).getElementsByTag("ul").get(0).getElementsByTag("li");
+                for (int j = 0, jLen = liElements.size(); j < 2; j++) {
+                    try {
+                        String AContent = liElements.get(j).getElementsByTag("a").get(0).attr("href");
+                        String contentUrl = "http://www.147xiaoshuo.com/" + AContent;
+                        List<Novels> jNovels = novelsRepository.findBySourceUrl(contentUrl);
+                        if (jNovels != null && jNovels.size() > 0) {
+                            continue;
+                        }
+                        Novels novels;
+                        Document contentDoc = HttpUtil.getHtmlFromUrl(contentUrl, true);
+                        String coverUrl = contentDoc.getElementById("fmimg").getElementsByTag("img").get(0).attr("src");
+                        String introduction = contentDoc.getElementById("intro").html();
+                        String author = contentDoc.getElementById("info").getElementsByTag("p").get(0).html().split("：")[1];
+                        String latestChapter = contentDoc.getElementById("info").getElementsByTag("p").get(3).getElementsByTag("a").get(0).html();
+                        Thread.sleep(1);
+                        Long createTime = DateUtil.dateToLong(new Date());
+                        String title = contentDoc.getElementById("info").getElementsByTag("h1").get(0).html();
+                        String category = contentDoc.getElementsByClass("con_top").get(0).getElementsByTag("a").get(1).html();
+                        String strUpdateTime = contentDoc.getElementById("info").getElementsByTag("p").get(2).html().split("：")[1];
+                        Date updateTime = DateUtil.strToDate(strUpdateTime, "yyyy-MM-dd HH:mm:ss");
+                        novels = Novels.builder().title(title).author(author).sourceUrl(contentUrl).sourceName("147小说").category(category).createTime(createTime).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(updateTime).build();
+                        novels = novelsRepository.save(novels);
+                        String novelsId = novels.getId();
+                        Chapters chapters;
+                        Elements ddElements = contentDoc.getElementById("list").getElementsByTag("dd");
+                        for (int k = 0, kLen = ddElements.size(); k < 1; k++) {
+                            try {
+                                Element chapterElement = ddElements.get(k).getElementsByTag("a").get(0);
+                                String chapter = chapterElement.html();
+                                String chapterUrl = "http://www.147xiaoshuo.com/" + chapterElement.attr("href");
+                                Document chapterDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
+                                String content = chapterDoc.getElementById("content").html();
+                                Date chapterUpTime = DateUtil.intervalTime(strUpdateTime, kLen - k - 1);
+                                chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(chapterUpTime).build();
+                                chaptersRepository.save(chapters);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            String category = detailDoc.getElementsByClass("con_top").get(0).getElementsByTag("a").get(1).html();
-            String introduction = detailDoc.getElementById("intro").html();
-            String latestChapterParam = detailDoc.getElementById("info").getElementsByTag("p").get(3).getElementsByTag("a").get(0).html();
-            String updateTime = "";
-
-            String coverUrl = "";
-            String source = "";
         }
     }
 }

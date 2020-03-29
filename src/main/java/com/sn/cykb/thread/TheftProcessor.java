@@ -9,10 +9,12 @@ import com.sn.cykb.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -32,11 +34,11 @@ public class TheftProcessor {
 
     @Async("TheftExecutor")
     public void testTheft() {
-       try {
-           Thread.sleep(30 * 1000);
-       }catch (Exception e) {
-           log.error(e.getMessage());
-       }
+        try {
+            Thread.sleep(30 * 1000);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
         log.info("测试 theft");
     }
 
@@ -117,6 +119,64 @@ public class TheftProcessor {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Async("TheftExecutor")
+    public void theft147() {
+        String prefixUrl = "http://www.147xiaoshuo.com/sort/";
+        List<Integer> suffixList = Arrays.asList(1, 2, 3, 4, 6, 7, 10, 11, 8, 12, 9, 5);
+        for (int i = 0, iLen = suffixList.size(); i < iLen; i++) {
+            try {
+                String fullUrl = prefixUrl + suffixList.get(i) + "/";
+                Document novelsDoc = HttpUtil.getHtmlFromUrl(fullUrl, true);
+                Elements liElements = novelsDoc.getElementById("main").getElementsByClass("novellist").get(0).getElementsByTag("ul").get(0).getElementsByTag("li");
+                for (int j = 0, jLen = liElements.size(); j < jLen; j++) {
+                    try {
+                        String AContent = liElements.get(j).getElementsByTag("a").get(0).attr("href");
+                        String contentUrl = "http://www.147xiaoshuo.com/" + AContent;
+                        List<Novels> jNovels = novelsRepository.findBySourceUrl(contentUrl);
+                        if (jNovels != null && jNovels.size() > 0) {
+                            continue;
+                        }
+                        Novels novels;
+                        Document contentDoc = HttpUtil.getHtmlFromUrl(contentUrl, true);
+                        String coverUrl = contentDoc.getElementById("fmimg").getElementsByTag("img").get(0).attr("src");
+                        String introduction = contentDoc.getElementById("intro").html();
+                        String author = contentDoc.getElementById("info").getElementsByTag("p").get(0).html().split("：")[1];
+                        String latestChapter = contentDoc.getElementById("info").getElementsByTag("p").get(3).getElementsByTag("a").get(0).html();
+                        Thread.sleep(1);
+                        Long createTime = DateUtil.dateToLong(new Date());
+                        String title = contentDoc.getElementById("info").getElementsByTag("h1").get(0).html();
+                        String category = contentDoc.getElementsByClass("con_top").get(0).getElementsByTag("a").get(1).html();
+                        String strUpdateTime = contentDoc.getElementById("info").getElementsByTag("p").get(2).html().split("：")[1];
+                        Date updateTime = DateUtil.strToDate(strUpdateTime, "yyyy-MM-dd HH:mm:ss");
+                        novels = Novels.builder().title(title).author(author).sourceUrl(contentUrl).sourceName("147小说").category(category).createTime(createTime).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(updateTime).build();
+                        novels = novelsRepository.save(novels);
+                        String novelsId = novels.getId();
+                        Chapters chapters;
+                        Elements ddElements = contentDoc.getElementById("list").getElementsByTag("dd");
+                        for (int k = 0, kLen = ddElements.size(); k < kLen; k++) {
+                            try {
+                                Element chapterElement = ddElements.get(k).getElementsByTag("a").get(0);
+                                String chapter = chapterElement.html();
+                                String chapterUrl = "http://www.147xiaoshuo.com/" + chapterElement.attr("href");
+                                Document chapterDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
+                                String content = chapterDoc.getElementById("content").html();
+                                Date chapterUpTime = DateUtil.intervalTime(strUpdateTime, kLen - k - 1);
+                                chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(chapterUpTime).build();
+                                chaptersRepository.save(chapters);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

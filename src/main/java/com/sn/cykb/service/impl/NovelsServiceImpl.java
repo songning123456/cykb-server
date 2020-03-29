@@ -141,7 +141,9 @@ public class NovelsServiceImpl implements NovelsService {
             commonDTO.setMessage("准备开始爬虫!");
             if ("笔趣阁".equals(sourceName)) {
                 theftProcessor.theftBiquge();
-            } else {
+            } else if ("147小说".equals(sourceName)) {
+                theftProcessor.theft147();
+            }else {
                 theftProcessor.testTheft();
             }
         }
