@@ -160,6 +160,10 @@ public class TheftProcessor {
                             try {
                                 Element chapterElement = ddElements.get(k).getElementsByTag("a").get(0);
                                 String chapter = chapterElement.html();
+                                List<Chapters> kChapters = chaptersRepository.findByChapterAndNovelsId(chapter, novelsId);
+                                if (kChapters != null && kChapters.size() > 0) {
+                                    continue;
+                                }
                                 String chapterUrl = "http://www.147xiaoshuo.com/" + chapterElement.attr("href");
                                 Document chapterDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
                                 String content = chapterDoc.getElementById("content").html();
