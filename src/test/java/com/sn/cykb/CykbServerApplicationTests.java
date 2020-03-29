@@ -220,4 +220,78 @@ public class CykbServerApplicationTests {
             }
         }
     }
+
+    @Test
+    public void theftTiantianshuba() {
+        String prefixUrl = "http://www.ttshuba.net/fenlei/";
+        for (int i = 1; i <= 10; i++) {
+            try {
+                String fullUrl = prefixUrl + i + "/1.html";
+                Document novelsDoc = HttpUtil.getHtmlFromUrl(fullUrl, true);
+                this.handleTiantian(novelsDoc);
+                // 分页处理后续页面
+                int lastPage = Integer.parseInt(novelsDoc.getElementById("pagelink").getElementsByClass("last").get(0).html());
+                if (lastPage == 1) {
+                    continue;
+                }
+                for (int m = 2; m <= lastPage; m++) {
+                    String pageUrl = prefixUrl + i + "/" + m + ".html";
+                    Document pageNovelsDoc = HttpUtil.getHtmlFromUrl(pageUrl, true);
+                    this.handleTiantian(pageNovelsDoc);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void handleTiantian(Document document) {
+        Elements picElements = document.getElementById("alist").getElementsByClass("pic");
+        for (int j = 0, jLen = picElements.size(); j < jLen; j++) {
+            try {
+                String dictionaryUrl = picElements.get(j).getElementsByTag("a").get(0).attr("href");
+                List<Novels> jNovels = novelsRepository.findBySourceUrl(dictionaryUrl);
+                if (jNovels != null && jNovels.size() > 0) {
+                    continue;
+                }
+                Novels novels;
+                Document dictionaryDoc = HttpUtil.getHtmlFromUrl(dictionaryUrl, true);
+                String coverUrl = dictionaryDoc.getElementById("fmimg").getElementsByTag("img").get(0).attr("src");
+                String introduction = document.getElementById("alist").getElementsByClass("info").get(j).getElementsByClass("intro").get(0).html();
+                String author = dictionaryDoc.getElementById("info").getElementsByTag("p").get(0).html().split("：")[1];
+                String latestChapter = dictionaryDoc.getElementById("info").getElementsByTag("p").get(5).getElementsByTag("a").html();
+                Thread.sleep(1);
+                Long createTime = DateUtil.dateToLong(new Date());
+                String title = dictionaryDoc.getElementById("info").getElementsByTag("h1").get(0).html();
+                String category = dictionaryDoc.getElementById("info").getElementsByTag("p").get(1).html().split("：")[1];
+                String strUpdateTime = DateUtil.dateToStr(new Date(), "yyyy-MM-dd HH:mm:ss");
+                Date updateTime = DateUtil.strToDate(strUpdateTime, "yyyy-MM-dd HH:mm:ss");
+                novels = Novels.builder().title(title).author(author).sourceUrl(dictionaryUrl).sourceName("天天书吧").category(category).createTime(createTime).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(updateTime).build();
+                novels = novelsRepository.save(novels);
+                String novelsId = novels.getId();
+                Chapters chapters;
+                Elements ddElements = dictionaryDoc.getElementById("list").getElementsByTag("dd");
+                for (int k = 0, kLen = ddElements.size(); k < 1; k++) {
+                    try {
+                        Element chapterElement = ddElements.get(k).getElementsByTag("a").get(0);
+                        String chapter = chapterElement.html();
+                        List<Chapters> kChapters = chaptersRepository.findByChapterAndNovelsId(chapter, novelsId);
+                        if (kChapters != null && kChapters.size() > 0) {
+                            continue;
+                        }
+                        String chapterUrl = dictionaryUrl + chapterElement.attr("href");
+                        Document chapterDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
+                        String content = chapterDoc.getElementById("TXT").html();
+                        Date chapterUpTime = DateUtil.intervalTime(strUpdateTime, kLen - k - 1);
+                        chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(chapterUpTime).build();
+                        chaptersRepository.save(chapters);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
