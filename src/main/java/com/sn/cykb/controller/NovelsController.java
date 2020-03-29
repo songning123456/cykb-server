@@ -6,6 +6,8 @@ import com.sn.cykb.dto.NovelsDTO;
 import com.sn.cykb.service.NovelsService;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.NovelsVO;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @author: songning
  * @date: 2020/3/9 22:55
  */
+@Slf4j
 @RestController
 @RequestMapping("/novels")
 public class NovelsController {
@@ -59,6 +62,13 @@ public class NovelsController {
     @PostMapping("/searchResult")
     public CommonDTO<NovelsDTO> searchResults(@RequestBody CommonVO<NovelsVO> commonVO) {
         CommonDTO<NovelsDTO> commonDTO = novelsService.searchResult(commonVO);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "盗取书籍")
+    @GetMapping("/theftNovels")
+    public <T> CommonDTO<T> theftAllNovels(@RequestParam("sourceName") String sourceName) {
+        CommonDTO<T> commonDTO = novelsService.theftNovels(sourceName);
         return commonDTO;
     }
 }

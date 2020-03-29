@@ -22,4 +22,6 @@ public interface NovelsService {
     CommonDTO<NovelsDTO> fastSearch(String authorOrTitle);
 
     CommonDTO<NovelsDTO> searchResult( CommonVO<NovelsVO> commonVO);
+
+    <T> CommonDTO<T> theftNovels(String sourceName);
 }

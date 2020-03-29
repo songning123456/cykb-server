@@ -48,6 +48,11 @@ public class CykbServerApplicationTests {
                 for (int j = 0, jLen = ulElement.getElementsByTag("a").size(); j < 6; j++) {
                     Novels novels;
                     String bookUrl = ulElement.getElementsByTag("a").get(j).attr("href");
+                    // 判断 是否已经存在，如果存在则跳过
+                    List<Novels> jNovels = novelsRepository.findBySourceUrl(bookUrl);
+                    if (jNovels != null && jNovels.size() > 0) {
+                        continue;
+                    }
                     Document childDoc;
                     try {
                         childDoc = HttpUtil.getHtmlFromUrl(bookUrl, true);
@@ -68,10 +73,6 @@ public class CykbServerApplicationTests {
                     String strUpdateTime = infoElement.getElementsByTag("p").get(2).html().split("：")[1];
                     Date updateTime = DateUtil.strToDate(strUpdateTime, "yyyy-MM-dd HH:mm:ss");
                     novels = Novels.builder().title(title).author(author).sourceUrl(bookUrl).sourceName("笔趣阁").category(category).createTime(createTime).coverUrl(coverUrl).introduction(introduction).latestChapter(latestChapter).updateTime(updateTime).build();
-                    List<Novels> jNovels = novelsRepository.findBySourceUrl(bookUrl);
-                    if (jNovels != null && jNovels.size() > 0) {
-                        continue;
-                    }
                     novels = novelsRepository.save(novels);
                     String novelsId = novels.getId();
                     Chapters chapters;

@@ -137,6 +137,6 @@ public class DateUtil {
     }
 
     public static void main(String[] args) {
-       DateUtil.intervalTime("2019-12-15 11:16:37", 1000);
+       DateUtil.intervalTime("2019-12-15 11:16:37", 1923 - 1922 - 1);
     }
 }

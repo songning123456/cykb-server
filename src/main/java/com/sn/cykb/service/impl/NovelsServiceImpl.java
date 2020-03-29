@@ -6,8 +6,10 @@ import com.sn.cykb.entity.Novels;
 import com.sn.cykb.repository.NovelsRepository;
 import com.sn.cykb.service.NovelsService;
 import com.sn.cykb.util.ClassConvertUtil;
+import com.sn.cykb.util.TheftUtil;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.NovelsVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ public class NovelsServiceImpl implements NovelsService {
 
     @Autowired
     private NovelsRepository novelsRepository;
+    @Autowired
+    private TheftUtil theftUtil;
 
     @Override
     public CommonDTO<NovelsDTO> homePage(CommonVO<NovelsVO> commonVO) {
@@ -118,6 +122,29 @@ public class NovelsServiceImpl implements NovelsService {
         }
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
+        return commonDTO;
+    }
+
+    @Override
+    public <T> CommonDTO<T>  theftNovels(String sourceName){
+        CommonDTO<T> commonDTO = new CommonDTO<>();
+        if (StringUtils.isEmpty(sourceName)) {
+            commonDTO.setStatus(202);
+            commonDTO.setMessage("sourceName不能为空!");
+            return commonDTO;
+        }
+        // 如果表里存在就说明 已经开始爬虫了
+        List<Novels> novelsList = novelsRepository.findFirstClassifyNative(sourceName, 1);
+        if (novelsList != null && novelsList.size() > 0) {
+            commonDTO.setMessage("此网站正在爬虫!");
+        } else {
+            commonDTO.setMessage("准备开始爬虫!");
+            if ("笔趣阁".equals(sourceName)) {
+                // theftUtil.theftBiquge();
+            } else {
+                theftUtil.testTheft();
+            }
+        }
         return commonDTO;
     }
 }
