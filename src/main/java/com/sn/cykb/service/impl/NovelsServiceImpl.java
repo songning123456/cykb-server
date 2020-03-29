@@ -126,7 +126,7 @@ public class NovelsServiceImpl implements NovelsService {
     }
 
     @Override
-    public <T> CommonDTO<T>  theftNovels(String sourceName){
+    public <T> CommonDTO<T> theftNovels(String sourceName) {
         CommonDTO<T> commonDTO = new CommonDTO<>();
         if (StringUtils.isEmpty(sourceName)) {
             commonDTO.setStatus(202);
@@ -140,7 +140,7 @@ public class NovelsServiceImpl implements NovelsService {
         } else {
             commonDTO.setMessage("准备开始爬虫!");
             if ("笔趣阁".equals(sourceName)) {
-                // theftProcessor.theftBiquge();
+                theftProcessor.theftBiquge();
             } else {
                 theftProcessor.testTheft();
             }
