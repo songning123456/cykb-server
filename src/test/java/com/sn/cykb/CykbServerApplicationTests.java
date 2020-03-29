@@ -43,12 +43,18 @@ public class CykbServerApplicationTests {
             String source = "http://www.xbiquge.la/xiaoshuodaquan/";
             html = HttpUtil.getHtmlFromUrl(source, true);
             Element mainElement = html.getElementById("main");
-            for (int i = 0, iLen = mainElement.getElementsByClass("novellist").size(); i < 1; i++) {
+            for (int i = 0, iLen = mainElement.getElementsByClass("novellist").size(); i < 4; i++) {
                 Element ulElement = mainElement.getElementsByClass("novellist").get(i).getElementsByTag("ul").get(0);
-                for (int j = 0, jLen = ulElement.getElementsByTag("a").size(); j < 3; j++) {
-                    Novels novels = new Novels();
+                for (int j = 0, jLen = ulElement.getElementsByTag("a").size(); j < 6; j++) {
+                    Novels novels;
                     String bookUrl = ulElement.getElementsByTag("a").get(j).attr("href");
-                    Document childDoc = HttpUtil.getHtmlFromUrl(bookUrl, true);
+                    Document childDoc;
+                    try {
+                        childDoc = HttpUtil.getHtmlFromUrl(bookUrl, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        continue;
+                    }
                     Element maininfoElement = childDoc.getElementById("maininfo");
                     String coverUrl = childDoc.getElementById("sidebar").getElementsByTag("img").get(0).attr("src");
                     Element infoElement = maininfoElement.getElementById("info");
@@ -79,7 +85,13 @@ public class CykbServerApplicationTests {
                         }
                         String chapterUrl = "http://www.xbiquge.la/" + a.attr("href");
                         Document contentDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
-                        String content = contentDoc.getElementById("content").html();
+                        String content;
+                        try {
+                            content = contentDoc.getElementById("content").html();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            content = "加载出错了!";
+                        }
                         Date chapterUpTime = DateUtil.intervalTime(strUpdateTime, kLen - k - 1);
                         chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(chapterUpTime).build();
                         chaptersRepository.save(chapters);
