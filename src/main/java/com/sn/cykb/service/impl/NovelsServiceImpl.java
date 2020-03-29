@@ -5,8 +5,8 @@ import com.sn.cykb.dto.NovelsDTO;
 import com.sn.cykb.entity.Novels;
 import com.sn.cykb.repository.NovelsRepository;
 import com.sn.cykb.service.NovelsService;
+import com.sn.cykb.thread.TheftProcessor;
 import com.sn.cykb.util.ClassConvertUtil;
-import com.sn.cykb.util.TheftUtil;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.NovelsVO;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +27,7 @@ public class NovelsServiceImpl implements NovelsService {
     @Autowired
     private NovelsRepository novelsRepository;
     @Autowired
-    private TheftUtil theftUtil;
+    private TheftProcessor theftProcessor;
 
     @Override
     public CommonDTO<NovelsDTO> homePage(CommonVO<NovelsVO> commonVO) {
@@ -140,9 +140,9 @@ public class NovelsServiceImpl implements NovelsService {
         } else {
             commonDTO.setMessage("准备开始爬虫!");
             if ("笔趣阁".equals(sourceName)) {
-                // theftUtil.theftBiquge();
+                // theftProcessor.theftBiquge();
             } else {
-                theftUtil.testTheft();
+                theftProcessor.testTheft();
             }
         }
         return commonDTO;
