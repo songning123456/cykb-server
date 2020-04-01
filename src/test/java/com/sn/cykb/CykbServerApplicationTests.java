@@ -282,6 +282,9 @@ public class CykbServerApplicationTests {
                         String chapterUrl = dictionaryUrl + chapterElement.attr("href");
                         Document chapterDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
                         String content = chapterDoc.getElementById("TXT").html();
+                        int headIndex = content.indexOf("&nbsp;&nbsp;&nbsp;&nbsp;");
+                        int tailIndex = content.indexOf("<div class=\"bottem\">");
+                        content = content.substring(headIndex, tailIndex);
                         Date chapterUpTime = DateUtil.intervalTime(strUpdateTime, kLen - k - 1);
                         chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(chapterUpTime).build();
                         chaptersRepository.save(chapters);
@@ -292,6 +295,25 @@ public class CykbServerApplicationTests {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Test
+    public void testTt() {
+        try {
+            String novelsId = "402880e97125925401712595a5de0000";
+            String chapterUrl = "http://www.ttshuba.net/shu/85/85314/50918547.html";
+            String chapter = "第4章 鲛人楼钰";
+            Document chapterDoc = HttpUtil.getHtmlFromUrl(chapterUrl, true);
+            String content = chapterDoc.getElementById("TXT").html();
+            int headIndex = content.indexOf("&nbsp;&nbsp;&nbsp;&nbsp;");
+            int tailIndex = content.indexOf("<div class=\"bottem\">");
+            content = content.substring(headIndex, tailIndex);
+            Date chapterUpTime = new Date();
+            Chapters chapters = Chapters.builder().chapter(chapter).content(content).novelsId(novelsId).updateTime(chapterUpTime).build();
+            chaptersRepository.save(chapters);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

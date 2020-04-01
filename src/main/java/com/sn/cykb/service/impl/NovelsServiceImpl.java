@@ -139,12 +139,19 @@ public class NovelsServiceImpl implements NovelsService {
             commonDTO.setMessage("此网站正在爬虫!");
         } else {
             commonDTO.setMessage("准备开始爬虫!");
-            if ("笔趣阁".equals(sourceName)) {
-                theftProcessor.theftBiquge();
-            } else if ("147小说".equals(sourceName)) {
-                theftProcessor.theft147();
-            }else {
-                theftProcessor.testTheft();
+            switch (sourceName) {
+                case "笔趣阁":
+                    theftProcessor.theftBiquge();
+                    break;
+                case "147小说":
+                    theftProcessor.theft147();
+                    break;
+                case "天天书吧":
+                    theftProcessor.theftTtsb();
+                    break;
+                default:
+                    theftProcessor.testTheft();
+                    break;
             }
         }
         return commonDTO;
