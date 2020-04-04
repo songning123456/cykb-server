@@ -63,11 +63,4 @@ public class NovelsController {
         CommonDTO<NovelsDTO> commonDTO = novelsService.searchResult(commonVO);
         return commonDTO;
     }
-
-    @AControllerAspect(description = "盗取书籍")
-    @GetMapping("/theftNovels")
-    public <T> CommonDTO<T> theftAllNovels(@RequestParam("sourceName") String sourceName) {
-        CommonDTO<T> commonDTO = novelsService.theftNovels(sourceName);
-        return commonDTO;
-    }
 }
