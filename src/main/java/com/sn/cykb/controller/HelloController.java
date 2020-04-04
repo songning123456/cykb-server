@@ -1,6 +1,6 @@
 package com.sn.cykb.controller;
 
-import com.sn.cykb.annotation.AControllerAspect;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/hello")
+@Slf4j
 public class HelloController {
 
-    @AControllerAspect(description = "测试接口是否成功连接")
     @GetMapping("/say")
     public String sayHello() {
+        log.info("say hello!!!");
         return "say hello!!!";
     }
 }

@@ -21,4 +21,4 @@ logging:
     root: warn
     com: info
   file:
-    name: logs/simple-blog.log
+    name: logs/cykb.log
