@@ -7,7 +7,6 @@ import com.sn.cykb.service.NovelsService;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.NovelsVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

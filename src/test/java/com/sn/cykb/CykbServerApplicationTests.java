@@ -8,19 +8,16 @@ import com.sn.cykb.repository.NovelsRepository;
 import com.sn.cykb.repository.UsersNovelsRelationRepository;
 import com.sn.cykb.util.DateUtil;
 import com.sn.cykb.util.HttpUtil;
-import com.sn.cykb.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
-import org.junit.platform.commons.util.StringUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.print.Doc;
 import java.util.*;
 
 @Slf4j

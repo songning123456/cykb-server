@@ -10,8 +10,8 @@
 #### 2020/04/04
 ```$xslt
     1. 定时爬虫更新文章(添加一个新的服务)
-    novels: updateTime
-    chapters: chapter, updateTime
+        novels: updateTime
+        chapters: chapter, updateTime
     2. 小说classify具体分类
     3. 爬虫添加一个新的服务
     4. 夜间模式调整(解决)
