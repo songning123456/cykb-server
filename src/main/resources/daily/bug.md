@@ -13,6 +13,6 @@
         novels: updateTime
         chapters: chapter, updateTime
     2. 小说classify具体分类
-    3. 爬虫添加一个新的服务
+    3. 爬虫添加一个新的服务(已完成 目前正在爬取5个小说网站)
     4. 夜间模式调整(解决)
 ```
