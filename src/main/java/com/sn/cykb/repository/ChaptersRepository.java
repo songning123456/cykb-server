@@ -20,6 +20,7 @@ public interface ChaptersRepository extends JpaRepository<Chapters, String> {
     @Query(value = "select id as chaptersId, chapter from chapters where novels_id = ?1 order by update_time asc", nativeQuery = true)
     List<Map<String, Object>> findDirectoryNative(String novelsId);
 
+    @Override
     Optional<Chapters> findById(String id);
 
     List<Chapters> findByChapterAndNovelsId(String chapter, String novelsId);
