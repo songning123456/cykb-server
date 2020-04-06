@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,14 +51,19 @@ public class NovelsServiceImpl implements NovelsService {
         CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
         List<Map<String, Object>> src = novelsRepository.countSourceNative();
         List<NovelsDTO> target = new ArrayList<>();
+        Map<String, Object> dataExt = new HashMap<>(2);
         src.forEach(item -> {
             NovelsDTO dto = new NovelsDTO();
-            dto.setSourceName(String.valueOf(item.get("sourceName")));
+            String sourceName = String.valueOf(item.get("sourceName"));
+            dto.setSourceName(sourceName);
+            List<Map<String, Object>> mapList = novelsRepository.countCategoryBySourceNative(sourceName);
+            dataExt.put(sourceName, mapList);
             dto.setTotal(Integer.parseInt(item.get("total").toString()));
             target.add(dto);
         });
         commonDTO.setTotal((long) src.size());
         commonDTO.setData(target);
+        commonDTO.setDataExt(dataExt);
         return commonDTO;
     }
 
@@ -67,13 +73,14 @@ public class NovelsServiceImpl implements NovelsService {
         Integer recordStartNo = commonVO.getRecordStartNo();
         int pageRecordNum = commonVO.getPageRecordNum();
         String sourceName = commonVO.getCondition().getSourceName();
+        String category = commonVO.getCondition().getCategory();
         List<Novels> src;
         List<NovelsDTO> target = new ArrayList<>();
         if (null != recordStartNo) {
-            src = novelsRepository.findFirstClassifyNative(sourceName, pageRecordNum);
+            src = novelsRepository.findFirstClassifyNative(sourceName, category, pageRecordNum);
         } else {
             Long createTime = commonVO.getCondition().getCreateTime();
-            src = novelsRepository.findMoreClassifyNative(sourceName, createTime, pageRecordNum);
+            src = novelsRepository.findMoreClassifyNative(sourceName, category, createTime, pageRecordNum);
         }
         ClassConvertUtil.populateList(src, target, NovelsDTO.class);
         commonDTO.setData(target);
