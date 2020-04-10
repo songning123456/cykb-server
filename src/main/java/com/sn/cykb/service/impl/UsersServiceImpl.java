@@ -70,7 +70,7 @@ public class UsersServiceImpl implements UsersService {
         CommonDTO<UsersDTO> commonDTO = new CommonDTO<>();
         String telephone = commonVO.getCondition().getCode();
         Users users = usersRepository.findByUniqueId(telephone);
-        if (users != null) {
+        if (users == null) {
             users = Users.builder().uniqueId(telephone).updateTime(new Date()).build();
             users = usersRepository.save(users);
         }

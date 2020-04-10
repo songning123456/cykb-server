@@ -31,7 +31,7 @@ public class UsersController {
         return commonDTO;
     }
 
-    @PostMapping("/users/web/getUsersInfo")
+    @PostMapping("/web/getUsersInfo")
     @AControllerAspect(description = "根据手机号获取用户信息")
     CommonDTO<UsersDTO> getPhoneUsersInfos(@RequestBody CommonVO<UsersVO> commonVO) {
         CommonDTO<UsersDTO> commonDTO = usersService.getPhoneUsersInfo(commonVO);
