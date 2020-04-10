@@ -75,7 +75,8 @@ public class UsersServiceImpl implements UsersService {
             users = usersRepository.save(users);
         }
         UsersDTO usersDTO = new UsersDTO();
-        ClassConvertUtil.populate(users, usersDTO);
+        assert users != null;
+        usersDTO.setUniqueId(users.getId());
         commonDTO.setData(Collections.singletonList(usersDTO));
         return commonDTO;
     }
