@@ -25,9 +25,16 @@ public class UsersController {
     private UsersService usersService;
 
     @PostMapping("/weixin/getUsersInfo")
-    @AControllerAspect(description = "登陆时获取用户信息")
-    CommonDTO<UsersDTO> getWxUsersInfo(@RequestBody CommonVO<UsersVO> commonVO) {
+    @AControllerAspect(description = "登陆时微信获取用户信息")
+    CommonDTO<UsersDTO> getWxUsersInfos(@RequestBody CommonVO<UsersVO> commonVO) {
         CommonDTO<UsersDTO> commonDTO = usersService.getWxUsersInfo(commonVO);
+        return commonDTO;
+    }
+
+    @PostMapping("/users/web/getUsersInfo")
+    @AControllerAspect(description = "根据手机号获取用户信息")
+    CommonDTO<UsersDTO> getPhoneUsersInfos(@RequestBody CommonVO<UsersVO> commonVO) {
+        CommonDTO<UsersDTO> commonDTO = usersService.getPhoneUsersInfo(commonVO);
         return commonDTO;
     }
 }

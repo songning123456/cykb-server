@@ -65,6 +65,21 @@ public class UsersServiceImpl implements UsersService {
         return commonDTO;
     }
 
+    @Override
+    public CommonDTO<UsersDTO> getPhoneUsersInfo(CommonVO<UsersVO> commonVO) {
+        CommonDTO<UsersDTO> commonDTO = new CommonDTO<>();
+        String telephone = commonVO.getCondition().getCode();
+        Users users = usersRepository.findByUniqueId(telephone);
+        if (users != null) {
+            users = Users.builder().uniqueId(telephone).updateTime(new Date()).build();
+            users = usersRepository.save(users);
+        }
+        UsersDTO usersDTO = new UsersDTO();
+        ClassConvertUtil.populate(users, usersDTO);
+        commonDTO.setData(Collections.singletonList(usersDTO));
+        return commonDTO;
+    }
+
     private String getWeixinUniqueId(String code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + "wxa0c6ab139ce8d933" + "&secret=" + "8154f064fd75361e41ee71f1e1de6fd2" + "&js_code=" + code + "&grant_type=" + code;
         String respond = HttpUtil.doGet(url);
