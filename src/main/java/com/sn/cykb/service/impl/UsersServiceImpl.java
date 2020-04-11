@@ -66,12 +66,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public CommonDTO<UsersDTO> getPhoneUsersInfo(CommonVO<UsersVO> commonVO) {
+    public CommonDTO<UsersDTO> getUniUsersInfo(CommonVO<UsersVO> commonVO) {
         CommonDTO<UsersDTO> commonDTO = new CommonDTO<>();
-        String telephone = commonVO.getCondition().getCode();
-        Users users = usersRepository.findByUniqueId(telephone);
+        String code = commonVO.getCondition().getCode();
+        Users users = usersRepository.findByUniqueId(code);
         if (users == null) {
-            users = Users.builder().uniqueId(telephone).updateTime(new Date()).build();
+            users = Users.builder().uniqueId(code).updateTime(new Date()).build();
             users = usersRepository.save(users);
         }
         UsersDTO usersDTO = new UsersDTO();

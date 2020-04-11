@@ -14,5 +14,5 @@ public interface UsersService {
 
     CommonDTO<UsersDTO> getWxUsersInfo(CommonVO<UsersVO> commonVO);
 
-    CommonDTO<UsersDTO> getPhoneUsersInfo(CommonVO<UsersVO> commonVO);
+    CommonDTO<UsersDTO> getUniUsersInfo(CommonVO<UsersVO> commonVO);
 }
