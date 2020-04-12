@@ -93,8 +93,8 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
     public CommonDTO<UsersNovelsRelationDTO> deleteBookcase(CommonVO<UsersNovelsRelationVO> commonVO) {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = new CommonDTO<>();
         String uniqueId = commonVO.getCondition().getUniqueId();
-        String novelsId = commonVO.getCondition().getNovelsId();
-        usersNovelsRelationRepository.deleteByUniqueIdAndNovelsId(uniqueId, novelsId);
+        List<String> novelsIdList = commonVO.getCondition().getNovelsIdList();
+        usersNovelsRelationRepository.deleteInNative(uniqueId, novelsIdList);
         return commonDTO;
     }
 

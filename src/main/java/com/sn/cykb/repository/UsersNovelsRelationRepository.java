@@ -26,7 +26,8 @@ public interface UsersNovelsRelationRepository extends JpaRepository<UsersNovels
 
     @Modifying
     @Transactional
-    int deleteByUniqueIdAndNovelsId(String uniqueId, String novelsId);
+    @Query(value = "delete from users_novels_relation where unique_id = ?1 and novels_id in (?2)", nativeQuery = true)
+    int deleteInNative(String uniqueId, List<String> novelsIdList);
 
     UsersNovelsRelation findByUniqueIdAndAndNovelsId(String uniqueId, String novelsId);
 
