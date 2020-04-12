@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: songning
@@ -28,4 +29,7 @@ public interface UsersNovelsRelationRepository extends JpaRepository<UsersNovels
     int deleteByUniqueIdAndNovelsId(String uniqueId, String novelsId);
 
     UsersNovelsRelation findByUniqueIdAndAndNovelsId(String uniqueId, String novelsId);
+
+    @Query(value = "select novels_id as novelsId, count(1) as total from users_novels_relation group by novels_id order by total desc limit 10", nativeQuery = true)
+    List<Map<String, Object>> countByNovelsIdNative();
 }

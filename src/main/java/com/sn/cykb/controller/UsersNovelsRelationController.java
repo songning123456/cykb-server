@@ -2,6 +2,7 @@ package com.sn.cykb.controller;
 
 import com.sn.cykb.annotation.AControllerAspect;
 import com.sn.cykb.dto.CommonDTO;
+import com.sn.cykb.dto.NovelsDTO;
 import com.sn.cykb.dto.UsersNovelsRelationDTO;
 import com.sn.cykb.service.UsersNovelsRelationService;
 import com.sn.cykb.vo.CommonVO;
@@ -52,6 +53,13 @@ public class UsersNovelsRelationController {
     @PostMapping("/isExist")
     public CommonDTO<UsersNovelsRelationDTO> isExists(@RequestBody CommonVO<UsersNovelsRelationVO> commonVO) {
         CommonDTO<UsersNovelsRelationDTO> commonDTO = usersNovelsRelationService.isExist(commonVO);
+        return commonDTO;
+    }
+
+    @AControllerAspect(description = "大家都在搜")
+    @GetMapping("/ourSearch")
+    public CommonDTO<NovelsDTO> ourSearches() {
+        CommonDTO<NovelsDTO> commonDTO = usersNovelsRelationService.ourSearch();
         return commonDTO;
     }
 }

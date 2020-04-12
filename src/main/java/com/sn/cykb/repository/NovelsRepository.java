@@ -37,11 +37,6 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
 
     List<Novels> findAllByIdInOrderByUpdateTimeDesc(List<String> novelsIds);
 
-    @Modifying
-    @Transactional
-    @Query(value = "update novels set create_time = ?1 where id = ?2", nativeQuery = true)
-    void updateCreateTimeNative(Long createTime, String novelsId);
-
     List<Novels> findByAuthorOrderByCreateTimeDesc(String author);
 
     @Query(value = "select * from novels where author like concat('%', ?1, '%') or title like concat('%', ?1, '%') limit 10", nativeQuery = true)
@@ -52,6 +47,4 @@ public interface NovelsRepository extends JpaRepository<Novels, String> {
 
     @Query(value = "select * from novels where (author like concat('%', ?1, '%') or title like concat('%', ?1, '%')) and create_time < ?2  order by create_time desc limit ?3", nativeQuery = true)
     List<Novels> findMoreByAuthorOrTitleNative(String authorOrTitle, Long createTime, int size);
-
-    List<Novels> findBySourceUrl(String sourceUrl);
 }

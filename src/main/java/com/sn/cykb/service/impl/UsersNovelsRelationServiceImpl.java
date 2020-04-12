@@ -2,6 +2,7 @@ package com.sn.cykb.service.impl;
 
 import com.sn.cykb.constant.HttpStatus;
 import com.sn.cykb.dto.CommonDTO;
+import com.sn.cykb.dto.NovelsDTO;
 import com.sn.cykb.dto.UsersNovelsRelationDTO;
 import com.sn.cykb.entity.Novels;
 import com.sn.cykb.entity.UsersNovelsRelation;
@@ -106,6 +107,23 @@ public class UsersNovelsRelationServiceImpl implements UsersNovelsRelationServic
         if (relation == null) {
             commonDTO.setStatus(202);
         }
+        return commonDTO;
+    }
+
+    @Override
+    public CommonDTO<NovelsDTO> ourSearch() {
+        CommonDTO<NovelsDTO> commonDTO = new CommonDTO<>();
+        List<Map<String, Object>> novelsList = usersNovelsRelationRepository.countByNovelsIdNative();
+        List<String> novelsIdList = new ArrayList<>();
+        for (Map<String, Object> item: novelsList) {
+            String novelsId = String.valueOf(item.get("novelsId"));
+            novelsIdList.add(novelsId);
+        }
+        List<Novels> src = novelsRepository.findAllByIdInOrderByUpdateTimeDesc(novelsIdList);
+        List<NovelsDTO> target = new ArrayList<>();
+        ClassConvertUtil.populateList(src, target, NovelsDTO.class);
+        commonDTO.setData(target);
+        commonDTO.setTotal((long)target.size());
         return commonDTO;
     }
 }

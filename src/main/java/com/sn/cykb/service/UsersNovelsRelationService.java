@@ -1,6 +1,7 @@
 package com.sn.cykb.service;
 
 import com.sn.cykb.dto.CommonDTO;
+import com.sn.cykb.dto.NovelsDTO;
 import com.sn.cykb.dto.UsersNovelsRelationDTO;
 import com.sn.cykb.vo.CommonVO;
 import com.sn.cykb.vo.UsersNovelsRelationVO;
@@ -20,4 +21,6 @@ public interface UsersNovelsRelationService {
     CommonDTO<UsersNovelsRelationDTO> deleteBookcase(CommonVO<UsersNovelsRelationVO> commonVO);
 
     CommonDTO<UsersNovelsRelationDTO> isExist(CommonVO<UsersNovelsRelationVO> commonVO);
+
+    CommonDTO<NovelsDTO> ourSearch();
 }
