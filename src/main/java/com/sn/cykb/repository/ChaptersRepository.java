@@ -22,6 +22,4 @@ public interface ChaptersRepository extends JpaRepository<Chapters, String> {
 
     @Override
     Optional<Chapters> findById(String id);
-
-    List<Chapters> findByChapterAndNovelsId(String chapter, String novelsId);
 }
