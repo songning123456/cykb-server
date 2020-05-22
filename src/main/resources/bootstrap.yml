@@ -18,6 +18,12 @@ spring:
     show-sql: false
   application:
     name: cykbServer
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: uniConfig
+      profile: dev
 
 eureka:
   client:
