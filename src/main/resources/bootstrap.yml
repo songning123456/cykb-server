@@ -1,21 +1,4 @@
-server:
-  port: 8012
-
 spring:
-  mvc:
-    servlet:
-      path: /cykb
-  datasource:
-    url: jdbc:mysql://192.168.0.108:3306/cykb?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
-  main:
-    allow-bean-definition-overriding: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database: mysql
-    show-sql: false
   application:
     name: cykbServer
   cloud:
@@ -31,11 +14,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://192.168.0.109:7082/eureka/
-
-logging:
-  level:
-    # 全局等级
-    root: warn
-    com: info
-  file:
-    name: logs/cykb.log
