@@ -6,7 +6,7 @@ spring:
     servlet:
       path: /cykb
   datasource:
-    url: jdbc:mysql://localhost:3306/cykb?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.0.108:3306/cykb?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&failOverReadOnly=false&allowPublicKeyRetrieval=true
     username: root
     password: 123456
   main:
@@ -21,14 +21,16 @@ spring:
   cloud:
     config:
       discovery:
-        enabled: true
+        enabled: false
         service-id: uniConfig
       profile: dev
+      label: master
+      uri: http://192.168.0.109:7081
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:7082/eureka/
+      defaultZone: http://192.168.0.109:7082/eureka/
 
 logging:
   level:
