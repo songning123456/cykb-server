@@ -4,13 +4,17 @@ spring:
   cloud:
     config:
       discovery:
-        enabled: false
+        enabled: true
         service-id: uniConfig
       profile: dev
       label: master
-      uri: http://192.168.0.109:7081
+      username: 1457065857@qq.com
+      password: 772805406sn123.
 
 eureka:
   client:
     service-url:
       defaultZone: http://192.168.0.109:7082/eureka/
+  instance:
+    preferIpAddress: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
