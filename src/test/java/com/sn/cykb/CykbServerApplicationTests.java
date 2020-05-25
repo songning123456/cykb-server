@@ -19,8 +19,10 @@ public class CykbServerApplicationTests {
 
     @Test
     public void testDemo() {
-        long id = generateIdDao.generateId();
-        System.out.println(id);
+        for (int i = 0; i < 100; i++) {
+            long id = generateIdDao.generateId();
+            log.info("id为: {}", id);
+        }
     }
 
 }

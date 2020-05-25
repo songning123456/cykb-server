@@ -15,12 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class HelloController {
 
-    @Value("${uni.name}")
-    private String name;
-
     @GetMapping("/say")
     public String sayHello() {
-        log.info(name);
         log.info("say hello!!!");
         return "say hello!!!";
     }
