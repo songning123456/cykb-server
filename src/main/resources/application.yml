@@ -17,6 +17,19 @@ spring:
     database: mysql
     show-sql: false
 
+dubbo:
+  application:
+    name:  dubbo-consumer
+  registry:
+    address: 192.168.0.110:2181
+    protocol: zookeeper
+    check: false
+  monitor:
+    protocol: register
+  consumer:
+    check:  false
+    timeout: 3000
+
 logging:
   level:
     # 全局等级
