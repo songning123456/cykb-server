@@ -1,6 +1,10 @@
 server:
   port: 8012
 
+uniId:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+
 spring:
   mvc:
     servlet:
